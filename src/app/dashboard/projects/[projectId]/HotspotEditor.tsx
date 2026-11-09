@@ -28,6 +28,10 @@ export function HotspotEditor({
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const [aiFloors, setAiFloors] = useState("");
+  const [aiBusy, setAiBusy] = useState(false);
+  const [aiError, setAiError] = useState<string | null>(null);
+
   function pointToPercent(clientX: number, clientY: number) {
     const rect = containerRef.current!.getBoundingClientRect();
     const x = clamp(((clientX - rect.left) / rect.width) * 100, 0, 100);
@@ -94,11 +98,75 @@ export function HotspotEditor({
     router.refresh();
   }
 
+  async function handleAiSuggest() {
+    const floors = Number(aiFloors);
+    if (!Number.isFinite(floors) || floors < 1) {
+      setAiError("Add meg az emeletek számát.");
+      return;
+    }
+    setAiBusy(true);
+    setAiError(null);
+    try {
+      const res = await fetch("/api/building-hotspots/suggest", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ projectId, floors }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Hiba történt az AI javaslat lekérésekor.");
+
+      const suggestions = data.hotspots as { floor: number; x: number; y: number; w: number; h: number }[];
+      const supabase = createClient();
+      const { error: insertError } = await supabase.from("floor_hotspots").insert(
+        suggestions.map((h) => ({
+          project_id: projectId,
+          floor: h.floor,
+          label: `${h.floor}. emelet`,
+          x: h.x,
+          y: h.y,
+          w: h.w,
+          h: h.h,
+        })),
+      );
+      if (insertError) throw new Error(insertError.message);
+
+      router.refresh();
+    } catch (e) {
+      setAiError(e instanceof Error ? e.message : "Hiba történt.");
+    } finally {
+      setAiBusy(false);
+    }
+  }
+
   return (
     <div className="flex flex-col gap-3">
       <p className="text-xs text-zinc-500">
-        Húzással jelölj ki egy területet a képen egy emelethez, majd add meg az emelet számát.
+        Húzással jelölj ki egy területet a képen egy emelethez, majd add meg az emelet számát. Vagy
+        kérj AI-javaslatot, amit utána finomíthatsz.
       </p>
+
+      <div className="flex flex-wrap items-center gap-2 rounded-md border border-dashed border-zinc-300 bg-zinc-50 p-3">
+        {aiError ? <p className="w-full text-xs text-red-600">{aiError}</p> : null}
+        <label className="flex items-center gap-2 text-sm text-zinc-700">
+          Hány emelet van az épületen?
+          <input
+            type="number"
+            min={1}
+            value={aiFloors}
+            onChange={(e) => setAiFloors(e.target.value)}
+            className="w-20 rounded-md border border-zinc-300 px-2 py-1 text-sm"
+          />
+        </label>
+        <button
+          type="button"
+          disabled={aiBusy}
+          onClick={handleAiSuggest}
+          className="rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-500"
+        >
+          {aiBusy ? "AI elemzi a képet..." : "AI javaslat kérése"}
+        </button>
+      </div>
+
       <div
         ref={containerRef}
         onPointerDown={handlePointerDown}
