@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 const bodySchema = z.object({
   projectId: z.string().uuid(),
   floors: z.number().int().min(1).max(60),
+  instructions: z.string().trim().max(600).optional(),
 });
 
 const hotspotSchema = z.object({
@@ -43,7 +44,7 @@ export async function POST(request: Request) {
   if (!parsed.success) {
     return NextResponse.json({ error: "Érvénytelen kérés." }, { status: 400 });
   }
-  const { projectId, floors } = parsed.data;
+  const { projectId, floors, instructions } = parsed.data;
 
   const supabase = await createClient();
   const { data: userRes } = await supabase.auth.getUser();
@@ -86,6 +87,24 @@ export async function POST(request: Request) {
 
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
+  const promptParts = [
+    `Ez egy társasház látványterve vagy homlokzati fotója. A felhasználó összesen ${floors} kijelölendő területet szeretne a képen, mindegyik egy-egy emeletnek felel meg.`,
+    `A sávok NEM feltétlenül egyenlő magasságúak (pl. a földszint gyakran magasabb üzletsor, a tetőszint visszaugratott). Nézd meg figyelmesen a homlokzat tényleges elválasztó vonalait — párkányok, erkélyek, ablaksorok, anyagváltások — és ezek alapján határozd meg a valódi határokat, ne feltételezz egyenletes felosztást.`,
+    `A sávok fedjék le az épület tényleges szélességét a képen (ha az épület nem foglalja el a kép teljes szélességét, azt vedd figyelembe). Alapesetben számozd az emeleteket a legalsó láthatótól felfelé, 1-től ${floors}-ig.`,
+  ];
+
+  if (instructions) {
+    promptParts.push(
+      `Kiegészítő instrukció a felhasználótól, ami felülírja az alapértelmezett értelmezést: "${instructions}". Ezt vedd figyelembe abban is, mely sávokat jelölöd ki, hányat, és hogyan számozod őket.`,
+    );
+  }
+
+  promptParts.push(
+    `Válaszolj kizárólag a report_floor_hotspots eszköz meghívásával, pontosan ${floors} elemmel, szöveges válasz nélkül.`,
+  );
+
+  const promptText = promptParts.join("\n\n");
+
   try {
     const message = await anthropic.messages.create({
       model: "claude-sonnet-5-5",
@@ -124,10 +143,7 @@ export async function POST(request: Request) {
           role: "user",
           content: [
             { type: "image", source: { type: "base64", media_type: mediaType, data: base64 } },
-            {
-              type: "text",
-              text: `Ez egy társasház látványterve vagy homlokzati képe. Az épületnek összesen ${floors} emelete van, a legalsó látható emelettől felfelé számozva 1-től ${floors}-ig. Határozd meg minden emelet hozzávetőleges, vízszintes sávként értelmezett területét a képen, a teljes kép méretéhez viszonyított százalékban (0-100, ahol a (0,0) pont a bal felső sarok). Az emeletek nagyjából egyenlő magasságúak, és a sávok fedjék le az épület tényleges szélességét a képen (ha az épület nem foglalja el a kép teljes szélességét, azt vedd figyelembe). Válaszolj kizárólag a report_floor_hotspots eszköz meghívásával, pontosan ${floors} elemmel, szöveges válasz nélkül.`,
-            },
+            { type: "text", text: promptText },
           ],
         },
       ],

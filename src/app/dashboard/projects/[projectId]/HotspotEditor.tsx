@@ -29,6 +29,7 @@ export function HotspotEditor({
   const [error, setError] = useState<string | null>(null);
 
   const [aiFloors, setAiFloors] = useState("");
+  const [aiInstructions, setAiInstructions] = useState("");
   const [aiBusy, setAiBusy] = useState(false);
   const [aiError, setAiError] = useState<string | null>(null);
 
@@ -110,7 +111,11 @@ export function HotspotEditor({
       const res = await fetch("/api/building-hotspots/suggest", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ projectId, floors }),
+        body: JSON.stringify({
+          projectId,
+          floors,
+          instructions: aiInstructions.trim() || undefined,
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error ?? "Hiba történt az AI javaslat lekérésekor.");
@@ -145,26 +150,38 @@ export function HotspotEditor({
         kérj AI-javaslatot, amit utána finomíthatsz.
       </p>
 
-      <div className="flex flex-wrap items-center gap-2 rounded-md border border-dashed border-zinc-300 bg-zinc-50 p-3">
-        {aiError ? <p className="w-full text-xs text-red-600">{aiError}</p> : null}
-        <label className="flex items-center gap-2 text-sm text-zinc-700">
-          Hány emelet van az épületen?
-          <input
-            type="number"
-            min={1}
-            value={aiFloors}
-            onChange={(e) => setAiFloors(e.target.value)}
-            className="w-20 rounded-md border border-zinc-300 px-2 py-1 text-sm"
+      <div className="flex flex-col gap-2 rounded-md border border-dashed border-zinc-300 bg-zinc-50 p-3">
+        {aiError ? <p className="text-xs text-red-600">{aiError}</p> : null}
+        <div className="flex flex-wrap items-center gap-2">
+          <label className="flex items-center gap-2 text-sm text-zinc-700">
+            Hány emeletet jelöljön ki?
+            <input
+              type="number"
+              min={1}
+              value={aiFloors}
+              onChange={(e) => setAiFloors(e.target.value)}
+              className="w-20 rounded-md border border-zinc-300 px-2 py-1 text-sm"
+            />
+          </label>
+          <button
+            type="button"
+            disabled={aiBusy}
+            onClick={handleAiSuggest}
+            className="rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-500"
+          >
+            {aiBusy ? "AI elemzi a képet..." : "AI javaslat kérése"}
+          </button>
+        </div>
+        <label className="flex flex-col gap-1 text-sm text-zinc-700">
+          Kiegészítő instrukció az AI-nak (opcionális)
+          <textarea
+            value={aiInstructions}
+            onChange={(e) => setAiInstructions(e.target.value)}
+            rows={2}
+            placeholder="pl. a földszint üzletsor, azt hagyd ki; a tetőtérben is vannak lakások, azt vedd külön emeletnek"
+            className="rounded-md border border-zinc-300 px-2 py-1.5 text-sm"
           />
         </label>
-        <button
-          type="button"
-          disabled={aiBusy}
-          onClick={handleAiSuggest}
-          className="rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-500"
-        >
-          {aiBusy ? "AI elemzi a képet..." : "AI javaslat kérése"}
-        </button>
       </div>
 
       <div
