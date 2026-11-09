@@ -1,4 +1,4 @@
-import type { FloorPlan, Unit } from "@/lib/types";
+import type { FloorHotspot, FloorPlan, Unit } from "@/lib/types";
 
 export type SiteThemeProps = {
   projectId: string;
@@ -7,6 +7,8 @@ export type SiteThemeProps = {
   description: string | null;
   floorPlans: FloorPlan[];
   units: Unit[];
+  buildingImageUrl: string | null;
+  hotspots: FloorHotspot[];
 };
 
 export const statusLabel = { available: "Szabad", reserved: "Fenntartott", sold: "Eladva" } as const;

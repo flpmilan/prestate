@@ -1,5 +1,6 @@
 import { spaceGrotesk, inter } from "../fonts";
 import { LeadForm } from "../LeadForm";
+import { BuildingExplorer } from "./BuildingExplorer";
 import { statusLabel, type SiteThemeProps } from "./types";
 
 const statusDot = {
@@ -8,7 +9,16 @@ const statusDot = {
   sold: "text-[#8A8A86]",
 } as const;
 
-export function MinimalTheme({ projectId, name, address, description, floorPlans, units }: SiteThemeProps) {
+export function MinimalTheme({
+  projectId,
+  name,
+  address,
+  description,
+  floorPlans,
+  units,
+  buildingImageUrl,
+  hotspots,
+}: SiteThemeProps) {
   const floorPlanById = new Map(floorPlans.map((fp) => [fp.id, fp]));
   const availableUnits = units.filter((u) => u.status !== "sold");
   const availableCount = availableUnits.length;
@@ -89,6 +99,20 @@ export function MinimalTheme({ projectId, name, address, description, floorPlans
           </a>
         </div>
       </section>
+
+      {/* BÖNGÉSZŐ */}
+      {buildingImageUrl && hotspots.length > 0 ? (
+        <section className="border-b border-[#E8E8E6] px-6 py-16 sm:px-20">
+          <BuildingExplorer
+            projectId={projectId}
+            buildingImageUrl={buildingImageUrl}
+            hotspots={hotspots}
+            units={units}
+            floorPlans={floorPlans}
+            variant="minimal"
+          />
+        </section>
+      ) : null}
 
       {/* ALAPRAJZOK */}
       {floorPlans.length > 0 ? (

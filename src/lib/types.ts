@@ -21,6 +21,7 @@ export type Project = {
   description: string | null;
   address: string | null;
   hero_image_url: string | null;
+  building_image_url: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -43,6 +44,18 @@ export type Unit = {
   room_count: number | null;
   price: number | null;
   status: UnitStatus;
+  created_at: string;
+};
+
+export type FloorHotspot = {
+  id: string;
+  project_id: string;
+  floor: number;
+  label: string | null;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
   created_at: string;
 };
 

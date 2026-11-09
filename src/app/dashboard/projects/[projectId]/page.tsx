@@ -4,6 +4,8 @@ import { createClient } from "@/lib/supabase/server";
 import { PublishToggle } from "./PublishToggle";
 import { ThemeSelect } from "./ThemeSelect";
 import { FloorPlanUpload } from "./FloorPlanUpload";
+import { BuildingImageUpload } from "./BuildingImageUpload";
+import { HotspotEditor } from "./HotspotEditor";
 import { UnitsImport } from "./UnitsImport";
 import { UnitStatusSelect } from "./UnitStatusSelect";
 
@@ -19,13 +21,13 @@ export default async function ProjectDetailPage({
 
   const { data: project } = await supabase
     .from("projects")
-    .select("id, organization_id, name, slug, status, theme, custom_domain, address")
+    .select("id, organization_id, name, slug, status, theme, custom_domain, address, building_image_url")
     .eq("id", projectId)
     .maybeSingle();
 
   if (!project) notFound();
 
-  const [{ data: floorPlans }, { data: units }, { data: leads }] = await Promise.all([
+  const [{ data: floorPlans }, { data: units }, { data: leads }, { data: hotspots }] = await Promise.all([
     supabase.from("floor_plans").select("id, name, image_url").eq("project_id", projectId),
     supabase
       .from("units")
@@ -37,6 +39,11 @@ export default async function ProjectDetailPage({
       .select("id, name, email, phone, message, created_at, unit_id")
       .eq("project_id", projectId)
       .order("created_at", { ascending: false }),
+    supabase
+      .from("floor_hotspots")
+      .select("id, project_id, floor, label, x, y, w, h, created_at")
+      .eq("project_id", projectId)
+      .order("floor"),
   ]);
 
   const publicUrl = `//${project.slug}.${ROOT_DOMAIN}`;
@@ -69,6 +76,24 @@ export default async function ProjectDetailPage({
         <p className="mt-1 text-xs text-zinc-500">A publikus oldal vizuális stílusa.</p>
         <div className="mt-3">
           <ThemeSelect projectId={project.id} theme={project.theme} />
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-sm font-semibold text-zinc-900">Épület látványterve</h2>
+        <p className="mt-1 text-xs text-zinc-500">
+          Tölts fel egy látványtervet, és jelölj ki rajta emeletenként egy területet — az
+          érdeklődők ezen böngészhetnek majd a publikus oldalon.
+        </p>
+        <div className="mt-3 flex flex-col gap-4">
+          {project.building_image_url ? (
+            <HotspotEditor
+              projectId={project.id}
+              imageUrl={project.building_image_url}
+              hotspots={hotspots ?? []}
+            />
+          ) : null}
+          <BuildingImageUpload projectId={project.id} organizationId={project.organization_id} />
         </div>
       </section>
 

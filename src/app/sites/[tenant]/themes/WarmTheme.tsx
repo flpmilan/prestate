@@ -1,5 +1,6 @@
 import { fraunces, inter } from "../fonts";
 import { LeadForm } from "../LeadForm";
+import { BuildingExplorer } from "./BuildingExplorer";
 import { statusLabel, type SiteThemeProps } from "./types";
 
 const statusBadge = {
@@ -8,7 +9,16 @@ const statusBadge = {
   sold: "bg-[#EFEAE3] text-[#8A8075]",
 } as const;
 
-export function WarmTheme({ projectId, name, address, description, floorPlans, units }: SiteThemeProps) {
+export function WarmTheme({
+  projectId,
+  name,
+  address,
+  description,
+  floorPlans,
+  units,
+  buildingImageUrl,
+  hotspots,
+}: SiteThemeProps) {
   const floorPlanById = new Map(floorPlans.map((fp) => [fp.id, fp]));
   const availableUnits = units.filter((u) => u.status !== "sold");
   const availableCount = availableUnits.length;
@@ -108,6 +118,20 @@ export function WarmTheme({ projectId, name, address, description, floorPlans, u
           </div>
         </div>
       </section>
+
+      {/* BÖNGÉSZŐ */}
+      {buildingImageUrl && hotspots.length > 0 ? (
+        <section className="px-6 py-20 sm:px-20">
+          <BuildingExplorer
+            projectId={projectId}
+            buildingImageUrl={buildingImageUrl}
+            hotspots={hotspots}
+            units={units}
+            floorPlans={floorPlans}
+            variant="warm"
+          />
+        </section>
+      ) : null}
 
       {/* ALAPRAJZOK */}
       {floorPlans.length > 0 ? (
