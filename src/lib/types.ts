@@ -1,5 +1,6 @@
 export type ProjectStatus = "draft" | "published";
 export type UnitStatus = "available" | "reserved" | "sold";
+export type ProjectTheme = "warm" | "dark" | "minimal";
 
 export type Organization = {
   id: string;
@@ -16,6 +17,7 @@ export type Project = {
   slug: string;
   custom_domain: string | null;
   status: ProjectStatus;
+  theme: ProjectTheme;
   description: string | null;
   address: string | null;
   hero_image_url: string | null;

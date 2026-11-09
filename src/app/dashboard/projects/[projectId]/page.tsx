@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { PublishToggle } from "./PublishToggle";
+import { ThemeSelect } from "./ThemeSelect";
 import { FloorPlanUpload } from "./FloorPlanUpload";
 import { UnitsImport } from "./UnitsImport";
 import { UnitStatusSelect } from "./UnitStatusSelect";
@@ -18,7 +19,7 @@ export default async function ProjectDetailPage({
 
   const { data: project } = await supabase
     .from("projects")
-    .select("id, organization_id, name, slug, status, custom_domain, address")
+    .select("id, organization_id, name, slug, status, theme, custom_domain, address")
     .eq("id", projectId)
     .maybeSingle();
 
@@ -62,6 +63,14 @@ export default async function ProjectDetailPage({
         </div>
         <PublishToggle projectId={project.id} status={project.status} />
       </div>
+
+      <section className="mt-8">
+        <h2 className="text-sm font-semibold text-zinc-900">Sablon</h2>
+        <p className="mt-1 text-xs text-zinc-500">A publikus oldal vizuális stílusa.</p>
+        <div className="mt-3">
+          <ThemeSelect projectId={project.id} theme={project.theme} />
+        </div>
+      </section>
 
       <section className="mt-8">
         <h2 className="text-sm font-semibold text-zinc-900">Alaprajzok</h2>
