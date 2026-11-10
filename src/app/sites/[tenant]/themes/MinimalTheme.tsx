@@ -2,6 +2,7 @@ import { spaceGrotesk, inter } from "../fonts";
 import { LeadForm } from "../LeadForm";
 import { BuildingExplorer } from "./BuildingExplorer";
 import { HeroGallery } from "./HeroGallery";
+import { LocationMap } from "./LocationMap";
 import { UnitsFilterList } from "./UnitsFilterList";
 import type { SiteThemeProps } from "./types";
 
@@ -155,10 +156,26 @@ export function MinimalTheme({
         </div>
       </section>
 
+      {/* HELYSZÍN */}
+      {address ? (
+        <section className="flex flex-col gap-6 border-b border-[#E8E8E6] px-6 py-16 sm:px-20">
+          <div>
+            <span className="text-xs font-semibold uppercase tracking-[0.1em] text-[#8A8A86]">03 — Helyszín</span>
+            <h2
+              className="mt-4 text-[30px] font-medium leading-tight text-[#131313]"
+              style={{ fontFamily: "var(--font-space-grotesk)" }}
+            >
+              {address}
+            </h2>
+          </div>
+          <LocationMap address={address} name={name} frameClassName="overflow-hidden border border-[#E8E8E6]" />
+        </section>
+      ) : null}
+
       {/* AJÁNLATKÉRÉS */}
       <section id="ajanlat" className="flex flex-wrap border-b border-[#E8E8E6]">
         <div className="flex-1 min-w-[280px] border-r border-[#E8E8E6] px-6 py-16 sm:px-20">
-          <span className="text-xs font-semibold uppercase tracking-[0.1em] text-[#8A8A86]">03 — Ajánlatkérés</span>
+          <span className="text-xs font-semibold uppercase tracking-[0.1em] text-[#8A8A86]">04 — Ajánlatkérés</span>
           <h2
             className="mt-4 text-[30px] font-medium leading-tight text-[#131313]"
             style={{ fontFamily: "var(--font-space-grotesk)" }}

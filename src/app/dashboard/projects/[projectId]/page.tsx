@@ -32,7 +32,10 @@ export default async function ProjectDetailPage({
 
   const [{ data: floorPlans }, { data: units }, { data: leads }, { data: hotspots }, { data: gallery }] =
     await Promise.all([
-      supabase.from("floor_plans").select("id, name, image_url, render_3d_url").eq("project_id", projectId),
+      supabase
+        .from("floor_plans")
+        .select("id, name, image_url, render_3d_url")
+        .eq("project_id", projectId),
       supabase
         .from("units")
         .select(

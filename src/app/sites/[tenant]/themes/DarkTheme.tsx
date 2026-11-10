@@ -2,6 +2,7 @@ import { playfair, inter } from "../fonts";
 import { LeadForm } from "../LeadForm";
 import { BuildingExplorer } from "./BuildingExplorer";
 import { HeroGallery } from "./HeroGallery";
+import { LocationMap } from "./LocationMap";
 import { UnitsFilterList } from "./UnitsFilterList";
 import type { SiteThemeProps } from "./types";
 
@@ -162,6 +163,19 @@ export function DarkTheme({
           variant="dark"
         />
       </section>
+
+      {/* HELYSZÍN */}
+      {address ? (
+        <section className="flex flex-col gap-6 border-t border-[#2E2820] px-6 py-20 sm:px-20">
+          <div className="flex flex-col gap-3">
+            <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[#C9A063]">Helyszín</span>
+            <h2 className="text-[30px] font-medium text-[#F6F0E6]" style={{ fontFamily: "var(--font-playfair)" }}>
+              {address}
+            </h2>
+          </div>
+          <LocationMap address={address} name={name} frameClassName="overflow-hidden border border-[#2E2820]" />
+        </section>
+      ) : null}
 
       {/* AJÁNLATKÉRÉS */}
       <section id="ajanlat" className="flex flex-wrap gap-14 border-t border-[#2E2820] bg-[#1C1712] px-6 py-20 sm:px-20">

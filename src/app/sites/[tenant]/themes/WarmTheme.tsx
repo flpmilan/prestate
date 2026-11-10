@@ -2,6 +2,7 @@ import { fraunces, inter } from "../fonts";
 import { LeadForm } from "../LeadForm";
 import { BuildingExplorer } from "./BuildingExplorer";
 import { HeroGallery } from "./HeroGallery";
+import { LocationMap } from "./LocationMap";
 import { UnitsFilterList } from "./UnitsFilterList";
 import type { SiteThemeProps } from "./types";
 
@@ -203,6 +204,19 @@ export function WarmTheme({
           variant="warm"
         />
       </section>
+
+      {/* HELYSZÍN */}
+      {address ? (
+        <section className="flex flex-col gap-6 border-t border-[#EADFCF] px-6 py-20 sm:px-20">
+          <div className="flex flex-col gap-3">
+            <span className="text-[13px] font-semibold uppercase tracking-[0.14em] text-[#9C5636]">Helyszín</span>
+            <h2 className="text-[32px] font-normal text-[#2A2420]" style={{ fontFamily: "var(--font-fraunces)" }}>
+              {address}
+            </h2>
+          </div>
+          <LocationMap address={address} name={name} frameClassName="overflow-hidden rounded-[3px] border border-[#EADFCF]" />
+        </section>
+      ) : null}
 
       {/* AJÁNLATKÉRÉS */}
       <section id="ajanlat" className="flex flex-wrap gap-14 bg-[#2A2420] px-6 py-20 sm:px-20">

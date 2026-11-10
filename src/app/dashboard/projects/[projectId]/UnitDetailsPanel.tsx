@@ -63,7 +63,10 @@ export function UnitDetailsPanel({
 
   async function removeFloorPlan() {
     const supabase = createClient();
-    await supabase.from("units").update({ floor_plan_image_url: null, floor_plan_render_3d_url: null }).eq("id", unitId);
+    await supabase
+      .from("units")
+      .update({ floor_plan_image_url: null, floor_plan_render_3d_url: null })
+      .eq("id", unitId);
     router.refresh();
   }
 
