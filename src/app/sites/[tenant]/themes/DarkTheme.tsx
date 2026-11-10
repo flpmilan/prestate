@@ -1,13 +1,9 @@
 import { playfair, inter } from "../fonts";
 import { LeadForm } from "../LeadForm";
 import { BuildingExplorer } from "./BuildingExplorer";
-import { statusLabel, type SiteThemeProps } from "./types";
-
-const statusBadge = {
-  available: "border border-[#5C7257] text-[#9BBE8E]",
-  reserved: "border border-[#8A6A3C] text-[#D7AD72]",
-  sold: "border border-[#4A443B] text-[#8A8075]",
-} as const;
+import { HeroGallery } from "./HeroGallery";
+import { UnitsFilterList } from "./UnitsFilterList";
+import type { SiteThemeProps } from "./types";
 
 export function DarkTheme({
   projectId,
@@ -18,8 +14,9 @@ export function DarkTheme({
   units,
   buildingImageUrl,
   hotspots,
+  roomsByUnit,
+  galleryImages,
 }: SiteThemeProps) {
-  const floorPlanById = new Map(floorPlans.map((fp) => [fp.id, fp]));
   const availableUnits = units.filter((u) => u.status !== "sold");
   const availableCount = availableUnits.length;
 
@@ -43,11 +40,6 @@ export function DarkTheme({
           <a href="#projekt" className="text-sm font-medium text-[#BDAE97]">
             A projektről
           </a>
-          {floorPlans.length > 0 ? (
-            <a href="#alaprajzok" className="text-sm font-medium text-[#BDAE97]">
-              Alaprajzok
-            </a>
-          ) : null}
           <a href="#lakasok" className="text-sm font-medium text-[#BDAE97]">
             Lakáslista
           </a>
@@ -62,13 +54,31 @@ export function DarkTheme({
 
       {/* HERO */}
       <section
-        className="relative flex min-h-[600px] items-center overflow-hidden px-6 py-16 sm:px-20"
-        style={{
-          background:
-            "radial-gradient(ellipse 1000px 700px at 85% 30%, rgba(201,160,99,0.14) 0%, rgba(201,160,99,0) 62%), #16120E",
-        }}
+        className="relative flex min-h-[620px] items-center overflow-hidden px-6 py-16 sm:px-20"
+        style={
+          galleryImages.length > 0
+            ? undefined
+            : {
+                background:
+                  "radial-gradient(ellipse 1000px 700px at 85% 30%, rgba(201,160,99,0.14) 0%, rgba(201,160,99,0) 62%), #16120E",
+              }
+        }
       >
-        <div className="relative flex max-w-xl flex-col gap-7">
+        {galleryImages.length > 0 ? (
+          <>
+            <div className="absolute inset-0">
+              <HeroGallery images={galleryImages} variant="dark" fullBleed className="h-full w-full" />
+            </div>
+            <div
+              className="absolute inset-0"
+              style={{
+                background:
+                  "linear-gradient(100deg, rgba(10,8,6,0.88) 0%, rgba(10,8,6,0.6) 45%, rgba(10,8,6,0.2) 75%, rgba(10,8,6,0) 100%)",
+              }}
+            />
+          </>
+        ) : null}
+        <div className="relative z-10 flex max-w-xl flex-col gap-7">
           {address ? (
             <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[#C9A063]">{address}</span>
           ) : null}
@@ -129,39 +139,9 @@ export function DarkTheme({
             hotspots={hotspots}
             units={units}
             floorPlans={floorPlans}
+            roomsByUnit={roomsByUnit}
             variant="dark"
           />
-        </section>
-      ) : null}
-
-      {/* ALAPRAJZOK */}
-      {floorPlans.length > 0 ? (
-        <section id="alaprajzok" className="flex flex-col gap-10 border-t border-[#2E2820] px-6 py-20 sm:px-20">
-          <div className="flex flex-col gap-3">
-            <span className="text-xs font-semibold uppercase tracking-[0.22em] text-[#C9A063]">Alaprajzok</span>
-            <h2 className="text-[30px] font-medium text-[#F6F0E6]" style={{ fontFamily: "var(--font-playfair)" }}>
-              Tervezett terek, pontos méretek
-            </h2>
-          </div>
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(min(280px,100%),1fr))] gap-px bg-[#2E2820]">
-            {floorPlans.map((fp) => (
-              <div key={fp.id} className="flex flex-col bg-[#1C1712]">
-                <div className="flex h-56 items-center justify-center">
-                  {fp.image_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={fp.image_url} alt={fp.name} className="h-full w-full object-contain p-6" />
-                  ) : (
-                    <span className="text-xs text-[#786B57]">Alaprajz</span>
-                  )}
-                </div>
-                <div className="flex items-center justify-between border-t border-[#2E2820] px-7 py-5">
-                  <span className="text-lg font-semibold text-[#F6F0E6]" style={{ fontFamily: "var(--font-playfair)" }}>
-                    {fp.name}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
         </section>
       ) : null}
 
@@ -174,66 +154,13 @@ export function DarkTheme({
           </h2>
         </div>
 
-        {units.length > 0 ? (
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] gap-px bg-[#2E2820]">
-            {units.map((u) => {
-              const fp = u.floor_plan_id ? floorPlanById.get(u.floor_plan_id) : null;
-              const sold = u.status === "sold";
-              return (
-                <div key={u.id} className={`flex flex-col gap-5 bg-[#1C1712] p-7 ${sold ? "opacity-60" : ""}`}>
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <div className="text-xl font-semibold text-[#F6F0E6]" style={{ fontFamily: "var(--font-playfair)" }}>
-                        {u.unit_number}
-                      </div>
-                      <div className="mt-1 text-sm text-[#786B57]">
-                        {u.floor !== null ? `${u.floor}. emelet` : ""}
-                        {fp ? ` · ${fp.name}` : ""}
-                      </div>
-                    </div>
-                    <span className={`px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide ${statusBadge[u.status]}`}>
-                      {statusLabel[u.status]}
-                    </span>
-                  </div>
-                  <div className="flex gap-6 border-y border-[#2E2820] py-4">
-                    {u.area_sqm ? (
-                      <div>
-                        <div className="text-[17px] font-medium text-[#F2EAE0]">{u.area_sqm} m²</div>
-                        <div className="mt-0.5 text-xs text-[#786B57]">terület</div>
-                      </div>
-                    ) : null}
-                    {u.room_count ? (
-                      <div>
-                        <div className="text-[17px] font-medium text-[#F2EAE0]">{u.room_count} szoba</div>
-                        <div className="mt-0.5 text-xs text-[#786B57]">elrendezés</div>
-                      </div>
-                    ) : null}
-                  </div>
-                  <div className="flex items-center justify-between">
-                    {u.price ? (
-                      <span className="text-xl font-semibold text-[#F6F0E6]" style={{ fontFamily: "var(--font-playfair)" }}>
-                        {u.price.toLocaleString("hu-HU")} Ft
-                      </span>
-                    ) : (
-                      <span />
-                    )}
-                    {u.status === "available" ? (
-                      <a href="#ajanlat" className="text-xs font-semibold uppercase tracking-wide text-[#C9A063]">
-                        Ajánlatot kérek →
-                      </a>
-                    ) : (
-                      <span className="text-sm text-[#5C543F]">
-                        {u.status === "reserved" ? "Foglalás alatt" : "Nem elérhető"}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <p className="text-sm text-[#786B57]">A lakáslista hamarosan elérhető.</p>
-        )}
+        <UnitsFilterList
+          projectId={projectId}
+          units={units}
+          floorPlans={floorPlans}
+          roomsByUnit={roomsByUnit}
+          variant="dark"
+        />
       </section>
 
       {/* AJÁNLATKÉRÉS */}

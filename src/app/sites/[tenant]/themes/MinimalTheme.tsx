@@ -1,13 +1,9 @@
 import { spaceGrotesk, inter } from "../fonts";
 import { LeadForm } from "../LeadForm";
 import { BuildingExplorer } from "./BuildingExplorer";
-import { statusLabel, type SiteThemeProps } from "./types";
-
-const statusDot = {
-  available: "text-[#131313]",
-  reserved: "text-[#8A5A3B]",
-  sold: "text-[#8A8A86]",
-} as const;
+import { HeroGallery } from "./HeroGallery";
+import { UnitsFilterList } from "./UnitsFilterList";
+import type { SiteThemeProps } from "./types";
 
 export function MinimalTheme({
   projectId,
@@ -18,10 +14,12 @@ export function MinimalTheme({
   units,
   buildingImageUrl,
   hotspots,
+  roomsByUnit,
+  galleryImages,
 }: SiteThemeProps) {
-  const floorPlanById = new Map(floorPlans.map((fp) => [fp.id, fp]));
   const availableUnits = units.filter((u) => u.status !== "sold");
   const availableCount = availableUnits.length;
+  const hasGallery = galleryImages.length > 0;
 
   return (
     <div
@@ -37,11 +35,6 @@ export function MinimalTheme({
           <a href="#projekt" className="text-sm font-medium text-[#131313]">
             A projektről
           </a>
-          {floorPlans.length > 0 ? (
-            <a href="#alaprajzok" className="text-sm font-medium text-[#131313]">
-              Alaprajzok
-            </a>
-          ) : null}
           <a href="#lakasok" className="text-sm font-medium text-[#131313]">
             Lakáslista
           </a>
@@ -53,20 +46,44 @@ export function MinimalTheme({
 
       {/* HERO */}
       <section className="flex flex-col gap-14 border-b border-[#E8E8E6] px-6 py-16 sm:px-20">
-        <div className="flex flex-wrap items-end justify-between gap-8">
+        <div
+          className={`relative flex flex-wrap items-end justify-between gap-8 ${
+            hasGallery ? "overflow-hidden px-6 py-10 sm:px-10 sm:py-14 min-h-[380px] sm:min-h-[460px]" : ""
+          }`}
+        >
+          {hasGallery ? (
+            <>
+              <div className="absolute inset-0">
+                <HeroGallery images={galleryImages} variant="minimal" fullBleed className="h-full w-full" />
+              </div>
+              <div className="absolute inset-0" style={{ background: "rgba(10,10,10,0.5)" }} />
+            </>
+          ) : null}
           <h1
-            className="max-w-3xl text-[44px] font-medium leading-[0.98] tracking-tight text-[#131313] sm:text-[64px]"
-            style={{ fontFamily: "var(--font-space-grotesk)" }}
+            className="relative z-10 max-w-3xl text-[44px] font-medium leading-[0.98] tracking-tight text-[#131313] sm:text-[64px]"
+            style={{ fontFamily: "var(--font-space-grotesk)", color: hasGallery ? "#FFFFFF" : undefined }}
           >
             Tiszta terek,
             <br />
             pontos tervek.
           </h1>
-          <div className="flex max-w-[280px] flex-col gap-3.5 pb-2">
+          <div className="relative z-10 flex max-w-[280px] flex-col gap-3.5 pb-2">
             {address ? (
-              <span className="text-xs font-semibold uppercase tracking-[0.1em] text-[#8A8A86]">{address}</span>
+              <span
+                className="text-xs font-semibold uppercase tracking-[0.1em] text-[#8A8A86]"
+                style={hasGallery ? { color: "rgba(255,255,255,0.75)" } : undefined}
+              >
+                {address}
+              </span>
             ) : null}
-            {description ? <p className="text-[15px] leading-relaxed text-[#4A4A46]">{description}</p> : null}
+            {description ? (
+              <p
+                className="text-[15px] leading-relaxed text-[#4A4A46]"
+                style={hasGallery ? { color: "rgba(255,255,255,0.85)" } : undefined}
+              >
+                {description}
+              </p>
+            ) : null}
           </div>
         </div>
 
@@ -109,49 +126,16 @@ export function MinimalTheme({
             hotspots={hotspots}
             units={units}
             floorPlans={floorPlans}
+            roomsByUnit={roomsByUnit}
             variant="minimal"
           />
-        </section>
-      ) : null}
-
-      {/* ALAPRAJZOK */}
-      {floorPlans.length > 0 ? (
-        <section id="alaprajzok" className="flex flex-col gap-0 border-b border-[#E8E8E6]">
-          <div className="px-6 pb-10 pt-16 sm:px-20">
-            <span className="text-xs font-semibold uppercase tracking-[0.1em] text-[#8A8A86]">02 — Alaprajzok</span>
-            <h2
-              className="mt-4 text-[30px] font-medium leading-tight text-[#131313]"
-              style={{ fontFamily: "var(--font-space-grotesk)" }}
-            >
-              Tervezett terek, pontos méretek
-            </h2>
-          </div>
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))]">
-            {floorPlans.map((fp) => (
-              <div key={fp.id} className="flex flex-col border-t border-[#E8E8E6]">
-                <div className="flex h-64 items-center justify-center border-b border-[#E8E8E6] bg-[#FAFAF9]">
-                  {fp.image_url ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img src={fp.image_url} alt={fp.name} className="h-full w-full object-contain p-8" />
-                  ) : (
-                    <span className="text-xs text-[#8A8A86]">Alaprajz</span>
-                  )}
-                </div>
-                <div className="flex items-center justify-between px-8 py-6">
-                  <span className="text-lg font-semibold text-[#131313]" style={{ fontFamily: "var(--font-space-grotesk)" }}>
-                    {fp.name}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
         </section>
       ) : null}
 
       {/* LAKÁSLISTA */}
       <section id="lakasok" className="flex flex-col gap-0 border-b border-[#E8E8E6]">
         <div className="px-6 pb-10 pt-16 sm:px-20">
-          <span className="text-xs font-semibold uppercase tracking-[0.1em] text-[#8A8A86]">03 — Lakáslista</span>
+          <span className="text-xs font-semibold uppercase tracking-[0.1em] text-[#8A8A86]">02 — Lakáslista</span>
           <h2
             className="mt-4 text-[30px] font-medium leading-tight text-[#131313]"
             style={{ fontFamily: "var(--font-space-grotesk)" }}
@@ -160,75 +144,21 @@ export function MinimalTheme({
           </h2>
         </div>
 
-        {units.length > 0 ? (
-          <div className="grid grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] border-t border-[#E8E8E6]">
-            {units.map((u) => {
-              const fp = u.floor_plan_id ? floorPlanById.get(u.floor_plan_id) : null;
-              const sold = u.status === "sold";
-              return (
-                <div
-                  key={u.id}
-                  className={`flex flex-col gap-5 border-b border-r border-[#E8E8E6] p-8 ${sold ? "opacity-55" : ""}`}
-                >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <div className="text-xl font-semibold text-[#131313]" style={{ fontFamily: "var(--font-space-grotesk)" }}>
-                        {u.unit_number}
-                      </div>
-                      <div className="mt-1 text-[13px] text-[#8A8A86]">
-                        {u.floor !== null ? `${u.floor}. emelet` : ""}
-                        {fp ? ` · ${fp.name}` : ""}
-                      </div>
-                    </div>
-                    <span className={`text-[11px] font-semibold uppercase tracking-wide ${statusDot[u.status]}`}>
-                      ● {statusLabel[u.status]}
-                    </span>
-                  </div>
-                  <div className="flex gap-6 border-t border-[#F0F0EE] py-3.5">
-                    {u.area_sqm ? (
-                      <div>
-                        <div className="text-[16px] font-medium text-[#131313]">{u.area_sqm} m²</div>
-                        <div className="mt-0.5 text-xs text-[#8A8A86]">terület</div>
-                      </div>
-                    ) : null}
-                    {u.room_count ? (
-                      <div>
-                        <div className="text-[16px] font-medium text-[#131313]">{u.room_count} szoba</div>
-                        <div className="mt-0.5 text-xs text-[#8A8A86]">elrendezés</div>
-                      </div>
-                    ) : null}
-                  </div>
-                  <div className="flex items-center justify-between">
-                    {u.price ? (
-                      <span className="text-[20px] font-semibold text-[#131313]" style={{ fontFamily: "var(--font-space-grotesk)" }}>
-                        {u.price.toLocaleString("hu-HU")} Ft
-                      </span>
-                    ) : (
-                      <span />
-                    )}
-                    {u.status === "available" ? (
-                      <a href="#ajanlat" className="text-[13px] font-medium text-[#8A5A3B]">
-                        Ajánlatot kérek →
-                      </a>
-                    ) : (
-                      <span className="text-[13px] text-[#B5B5B0]">
-                        {u.status === "reserved" ? "Foglalás alatt" : "Nem elérhető"}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        ) : (
-          <p className="px-6 pb-16 text-sm text-[#8A8A86] sm:px-20">A lakáslista hamarosan elérhető.</p>
-        )}
+        <div className="px-6 pb-16 sm:px-20">
+          <UnitsFilterList
+            projectId={projectId}
+            units={units}
+            floorPlans={floorPlans}
+            roomsByUnit={roomsByUnit}
+            variant="minimal"
+          />
+        </div>
       </section>
 
       {/* AJÁNLATKÉRÉS */}
       <section id="ajanlat" className="flex flex-wrap border-b border-[#E8E8E6]">
         <div className="flex-1 min-w-[280px] border-r border-[#E8E8E6] px-6 py-16 sm:px-20">
-          <span className="text-xs font-semibold uppercase tracking-[0.1em] text-[#8A8A86]">04 — Ajánlatkérés</span>
+          <span className="text-xs font-semibold uppercase tracking-[0.1em] text-[#8A8A86]">03 — Ajánlatkérés</span>
           <h2
             className="mt-4 text-[30px] font-medium leading-tight text-[#131313]"
             style={{ fontFamily: "var(--font-space-grotesk)" }}

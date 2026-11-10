@@ -52,10 +52,41 @@ export function UnitsImport({ projectId }: { projectId: string }) {
           : null,
       }));
 
-      const { error: upsertError } = await supabase
+      const { data: upsertedUnits, error: upsertError } = await supabase
         .from("units")
-        .upsert(payload, { onConflict: "project_id,unit_number" });
+        .upsert(payload, { onConflict: "project_id,unit_number" })
+        .select("id, unit_number");
       if (upsertError) throw upsertError;
+
+      const unitIdByNumber = new Map((upsertedUnits ?? []).map((u) => [u.unit_number, u.id]));
+      const rowsWithRooms = rows.filter((row) => row.rooms.length > 0);
+
+      if (rowsWithRooms.length > 0) {
+        const unitIds = rowsWithRooms
+          .map((row) => unitIdByNumber.get(row.unit_number))
+          .filter((id): id is string => Boolean(id));
+
+        if (unitIds.length > 0) {
+          const { error: deleteError } = await supabase.from("unit_rooms").delete().in("unit_id", unitIds);
+          if (deleteError) throw deleteError;
+        }
+
+        const roomsPayload = rowsWithRooms.flatMap((row) => {
+          const unitId = unitIdByNumber.get(row.unit_number);
+          if (!unitId) return [];
+          return row.rooms.map((room, index) => ({
+            unit_id: unitId,
+            name: room.name,
+            area_sqm: room.area_sqm,
+            position: index,
+          }));
+        });
+
+        if (roomsPayload.length > 0) {
+          const { error: roomsError } = await supabase.from("unit_rooms").insert(roomsPayload);
+          if (roomsError) throw roomsError;
+        }
+      }
 
       setMessage(`${payload.length} lakás importálva/frissítve.`);
       if (inputRef.current) inputRef.current.value = "";
@@ -71,7 +102,9 @@ export function UnitsImport({ projectId }: { projectId: string }) {
     <div className="flex flex-col gap-2 rounded-lg border border-dashed border-zinc-300 p-4">
       <p className="text-xs text-zinc-500">
         Elvárt oszlopok: <code>lakás, emelet, terület, szobaszám, ár, státusz, alaprajz</code> (a
-        sorrend és a magyar/angol elnevezés is elfogadott).
+        sorrend és a magyar/angol elnevezés is elfogadott). Opcionális{" "}
+        <code>helyiségek</code> oszlop a helyiségenkénti bontáshoz, pl.{" "}
+        <code>Konyha: 8.2, Előszoba: 4.1, Nappali: 22</code>.
       </p>
       {error ? <p className="text-xs text-red-600">{error}</p> : null}
       {message ? <p className="text-xs text-emerald-600">{message}</p> : null}

@@ -31,6 +31,7 @@ export type FloorPlan = {
   project_id: string;
   name: string;
   image_url: string | null;
+  render_3d_url: string | null;
   created_at: string;
 };
 
@@ -38,12 +39,23 @@ export type Unit = {
   id: string;
   project_id: string;
   floor_plan_id: string | null;
+  floor_plan_image_url: string | null;
+  floor_plan_render_3d_url: string | null;
   unit_number: string;
   floor: number | null;
   area_sqm: number | null;
   room_count: number | null;
   price: number | null;
   status: UnitStatus;
+  created_at: string;
+};
+
+export type UnitRoom = {
+  id: string;
+  unit_id: string;
+  name: string;
+  area_sqm: number | null;
+  position: number;
   created_at: string;
 };
 
@@ -56,6 +68,14 @@ export type FloorHotspot = {
   y: number;
   w: number;
   h: number;
+  created_at: string;
+};
+
+export type GalleryImage = {
+  id: string;
+  project_id: string;
+  image_url: string;
+  position: number;
   created_at: string;
 };
 

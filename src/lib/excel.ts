@@ -1,6 +1,11 @@
 import * as XLSX from "xlsx";
 import type { UnitStatus } from "./types";
 
+export type ParsedRoom = {
+  name: string;
+  area_sqm: number | null;
+};
+
 export type ParsedUnitRow = {
   unit_number: string;
   floor: number | null;
@@ -9,6 +14,7 @@ export type ParsedUnitRow = {
   price: number | null;
   status: UnitStatus;
   floor_plan_name: string | null;
+  rooms: ParsedRoom[];
 };
 
 function normalizeHeader(header: string): string {
@@ -45,6 +51,10 @@ const HEADER_ALIASES: Record<string, keyof ParsedUnitRow> = {
   tipus: "floor_plan_name",
   type: "floor_plan_name",
   floor_plan: "floor_plan_name",
+  helyisegek: "rooms",
+  helyiseglista: "rooms",
+  szobareszletek: "rooms",
+  roomdetails: "rooms",
 };
 
 function normalizeStatus(value: unknown): UnitStatus {
@@ -58,6 +68,23 @@ function toNumber(value: unknown): number | null {
   if (value === null || value === undefined || value === "") return null;
   const n = typeof value === "number" ? value : Number(String(value).replace(/[^0-9.,-]/g, "").replace(",", "."));
   return Number.isFinite(n) ? n : null;
+}
+
+function parseRooms(value: unknown): ParsedRoom[] {
+  const raw = String(value ?? "").trim();
+  if (!raw) return [];
+
+  return raw
+    .split(/[,;|]/)
+    .map((part) => part.trim())
+    .filter(Boolean)
+    .map((part) => {
+      const match = part.match(/^(.+?)[:\-–]\s*([\d.,]+)\s*(?:m2|m²)?$/i);
+      if (match) {
+        return { name: match[1].trim(), area_sqm: toNumber(match[2]) };
+      }
+      return { name: part, area_sqm: null };
+    });
 }
 
 export function parseUnitsWorkbook(buffer: ArrayBuffer): ParsedUnitRow[] {
@@ -90,6 +117,9 @@ export function parseUnitsWorkbook(buffer: ArrayBuffer): ParsedUnitRow[] {
         case "status":
           mapped.status = normalizeStatus(value);
           break;
+        case "rooms":
+          mapped.rooms = parseRooms(value);
+          break;
       }
     }
 
@@ -103,6 +133,7 @@ export function parseUnitsWorkbook(buffer: ArrayBuffer): ParsedUnitRow[] {
       price: mapped.price ?? null,
       status: mapped.status ?? "available",
       floor_plan_name: mapped.floor_plan_name ?? null,
+      rooms: mapped.rooms ?? [],
     });
   }
 

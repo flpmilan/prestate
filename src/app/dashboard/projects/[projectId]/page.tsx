@@ -7,7 +7,10 @@ import { FloorPlanUpload } from "./FloorPlanUpload";
 import { BuildingImageUpload } from "./BuildingImageUpload";
 import { HotspotEditor } from "./HotspotEditor";
 import { UnitsImport } from "./UnitsImport";
-import { UnitStatusSelect } from "./UnitStatusSelect";
+import { UnitsTable } from "./UnitsTable";
+import { GalleryUpload } from "./GalleryUpload";
+import { FloorPlanCard } from "./FloorPlanCard";
+import type { UnitRoom } from "@/lib/types";
 
 const ROOT_DOMAIN = process.env.NEXT_PUBLIC_ROOT_DOMAIN || "localhost:3000";
 
@@ -27,24 +30,49 @@ export default async function ProjectDetailPage({
 
   if (!project) notFound();
 
-  const [{ data: floorPlans }, { data: units }, { data: leads }, { data: hotspots }] = await Promise.all([
-    supabase.from("floor_plans").select("id, name, image_url").eq("project_id", projectId),
-    supabase
-      .from("units")
-      .select("id, unit_number, floor, area_sqm, room_count, price, status, floor_plan_id")
-      .eq("project_id", projectId)
-      .order("unit_number"),
-    supabase
-      .from("leads")
-      .select("id, name, email, phone, message, created_at, unit_id")
-      .eq("project_id", projectId)
-      .order("created_at", { ascending: false }),
-    supabase
-      .from("floor_hotspots")
-      .select("id, project_id, floor, label, x, y, w, h, created_at")
-      .eq("project_id", projectId)
-      .order("floor"),
-  ]);
+  const [{ data: floorPlans }, { data: units }, { data: leads }, { data: hotspots }, { data: gallery }] =
+    await Promise.all([
+      supabase.from("floor_plans").select("id, name, image_url, render_3d_url").eq("project_id", projectId),
+      supabase
+        .from("units")
+        .select(
+          "id, project_id, unit_number, floor, area_sqm, room_count, price, status, floor_plan_id, floor_plan_image_url, floor_plan_render_3d_url, created_at",
+        )
+        .eq("project_id", projectId)
+        .order("unit_number"),
+      supabase
+        .from("leads")
+        .select("id, name, email, phone, message, created_at, unit_id")
+        .eq("project_id", projectId)
+        .order("created_at", { ascending: false }),
+      supabase
+        .from("floor_hotspots")
+        .select("id, project_id, floor, label, x, y, w, h, created_at")
+        .eq("project_id", projectId)
+        .order("floor"),
+      supabase
+        .from("project_gallery_images")
+        .select("id, project_id, image_url, position, created_at")
+        .eq("project_id", projectId)
+        .order("position"),
+    ]);
+
+  const unitIds = (units ?? []).map((u) => u.id);
+  const unitRooms: UnitRoom[] =
+    unitIds.length > 0
+      ? ((
+          await supabase
+            .from("unit_rooms")
+            .select("id, unit_id, name, area_sqm, position, created_at")
+            .in("unit_id", unitIds)
+            .order("position")
+        ).data ?? [])
+      : [];
+
+  const roomsByUnit: Record<string, UnitRoom[]> = {};
+  for (const room of unitRooms) {
+    (roomsByUnit[room.unit_id] ??= []).push(room);
+  }
 
   const publicUrl = `//${project.slug}.${ROOT_DOMAIN}`;
   const previewUrl = `/sites/${project.slug}`;
@@ -80,6 +108,17 @@ export default async function ProjectDetailPage({
       </section>
 
       <section className="mt-8">
+        <h2 className="text-sm font-semibold text-zinc-900">Hero galéria</h2>
+        <p className="mt-1 text-xs text-zinc-500">
+          Tölts fel képeket (épület, lakások látványtervei) — a publikus oldal hero szekciójában
+          automatikusan, animálva váltakoznak.
+        </p>
+        <div className="mt-3">
+          <GalleryUpload projectId={project.id} organizationId={project.organization_id} images={gallery ?? []} />
+        </div>
+      </section>
+
+      <section className="mt-8">
         <h2 className="text-sm font-semibold text-zinc-900">Épület látványterve</h2>
         <p className="mt-1 text-xs text-zinc-500">
           Tölts fel egy látványtervet, és jelölj ki rajta emeletenként egy területet — az
@@ -101,13 +140,13 @@ export default async function ProjectDetailPage({
         <h2 className="text-sm font-semibold text-zinc-900">Alaprajzok</h2>
         <div className="mt-2 flex flex-wrap gap-3">
           {(floorPlans ?? []).map((fp) => (
-            <div key={fp.id} className="w-28 rounded-md border border-zinc-200 bg-white p-2 text-center">
-              {fp.image_url ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img src={fp.image_url} alt={fp.name} className="h-20 w-full object-contain" />
-              ) : null}
-              <p className="mt-1 truncate text-xs text-zinc-600">{fp.name}</p>
-            </div>
+            <FloorPlanCard
+              key={fp.id}
+              floorPlanId={fp.id}
+              name={fp.name}
+              imageUrl={fp.image_url}
+              render3dUrl={fp.render_3d_url}
+            />
           ))}
         </div>
         <div className="mt-3">
@@ -122,32 +161,12 @@ export default async function ProjectDetailPage({
         </div>
 
         {units && units.length > 0 ? (
-          <table className="mt-4 w-full text-left text-sm">
-            <thead>
-              <tr className="border-b border-zinc-200 text-xs text-zinc-500">
-                <th className="py-2">Lakás</th>
-                <th>Emelet</th>
-                <th>Terület</th>
-                <th>Szoba</th>
-                <th>Ár</th>
-                <th>Státusz</th>
-              </tr>
-            </thead>
-            <tbody>
-              {units.map((u) => (
-                <tr key={u.id} className="border-b border-zinc-100">
-                  <td className="py-2 font-medium text-zinc-900">{u.unit_number}</td>
-                  <td>{u.floor ?? "–"}</td>
-                  <td>{u.area_sqm ? `${u.area_sqm} m²` : "–"}</td>
-                  <td>{u.room_count ?? "–"}</td>
-                  <td>{u.price ? `${u.price.toLocaleString("hu-HU")} Ft` : "–"}</td>
-                  <td>
-                    <UnitStatusSelect unitId={u.id} status={u.status} />
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <UnitsTable
+            units={units}
+            roomsByUnit={roomsByUnit}
+            projectId={project.id}
+            organizationId={project.organization_id}
+          />
         ) : (
           <p className="mt-4 text-sm text-zinc-500">Még nincs feltöltött lakás.</p>
         )}
