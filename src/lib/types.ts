@@ -1,6 +1,18 @@
 export type ProjectStatus = "draft" | "published";
 export type UnitStatus = "available" | "reserved" | "sold";
 export type ProjectTheme = "warm" | "dark" | "minimal";
+export type BlockType = "hero" | "building_explorer" | "unit_list" | "location" | "offer" | "text";
+export const STRUCTURAL_BLOCK_TYPES: BlockType[] = [
+  "hero",
+  "building_explorer",
+  "unit_list",
+  "location",
+  "offer",
+];
+
+export type StyleOverrides = {
+  accent?: string;
+};
 
 export type Organization = {
   id: string;
@@ -22,8 +34,20 @@ export type Project = {
   address: string | null;
   hero_image_url: string | null;
   building_image_url: string | null;
+  style_overrides: StyleOverrides | null;
   created_at: string;
   updated_at: string;
+};
+
+export type ProjectBlock = {
+  id: string;
+  project_id: string;
+  type: BlockType;
+  position: number;
+  visible: boolean;
+  title: string | null;
+  body: string | null;
+  created_at: string;
 };
 
 export type FloorPlan = {

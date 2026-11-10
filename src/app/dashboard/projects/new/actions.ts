@@ -56,5 +56,5 @@ export async function createProject(formData: FormData) {
     redirect(`/dashboard/projects/new?error=${encodeURIComponent(error?.message ?? "Ismeretlen hiba")}`);
   }
 
-  redirect(`/dashboard/projects/${projectId}`);
+  redirect(`/dashboard/projects/${projectId}/setup?step=2`);
 }

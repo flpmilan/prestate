@@ -93,12 +93,14 @@ export function UnitsFilterList({
   floorPlans,
   roomsByUnit,
   variant,
+  accentColor,
 }: {
   projectId: string;
   units: Unit[];
   floorPlans: FloorPlan[];
   roomsByUnit: Record<string, UnitRoom[]>;
   variant: Variant;
+  accentColor?: string | null;
 }) {
   const s = V[variant];
   const floorPlanById = useMemo(() => new Map(floorPlans.map((fp) => [fp.id, fp])), [floorPlans]);
@@ -338,6 +340,7 @@ export function UnitsFilterList({
           projectId={projectId}
           availableUnits={availableUnits}
           variant={variant}
+          accentColor={accentColor}
           onClose={() => setActiveUnit(null)}
         />
       ) : null}

@@ -1,4 +1,4 @@
-import type { FloorHotspot, FloorPlan, Unit, UnitRoom } from "@/lib/types";
+import type { FloorHotspot, FloorPlan, ProjectBlock, Unit, UnitRoom } from "@/lib/types";
 
 export type SiteThemeProps = {
   projectId: string;
@@ -11,6 +11,8 @@ export type SiteThemeProps = {
   hotspots: FloorHotspot[];
   roomsByUnit: Record<string, UnitRoom[]>;
   galleryImages: string[];
+  blocks: ProjectBlock[];
+  accentColor: string | null;
 };
 
 export const statusLabel = { available: "Szabad", reserved: "Fenntartott", sold: "Eladva" } as const;

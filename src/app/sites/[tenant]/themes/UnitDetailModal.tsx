@@ -17,7 +17,8 @@ const V = {
     modalBorder: "border-[#EADFCF]",
     close: "text-[#8A7E6E] hover:text-[#2A2420]",
     toggle: "border-[#EADFCF] text-[#8A7E6E] hover:text-[#2A2420]",
-    toggleActive: "border-[#2A2420] bg-[#2A2420] text-[#FBF7F1]",
+    toggleActiveText: "text-[#FBF7F1]",
+    defaultAccent: "#2A2420",
   },
   dark: {
     headingFont: { fontFamily: "var(--font-playfair)" },
@@ -28,7 +29,8 @@ const V = {
     modalBorder: "border-[#2E2820]",
     close: "text-[#786B57] hover:text-[#F2EAE0]",
     toggle: "border-[#2E2820] text-[#786B57] hover:text-[#F2EAE0]",
-    toggleActive: "border-[#C9A063] bg-[#C9A063] text-[#16120E]",
+    toggleActiveText: "text-[#16120E]",
+    defaultAccent: "#C9A063",
   },
   minimal: {
     headingFont: { fontFamily: "var(--font-space-grotesk)" },
@@ -39,7 +41,8 @@ const V = {
     modalBorder: "border-[#E8E8E6]",
     close: "text-[#8A8A86] hover:text-[#131313]",
     toggle: "border-[#E8E8E6] text-[#8A8A86] hover:text-[#131313]",
-    toggleActive: "border-[#131313] bg-[#131313] text-white",
+    toggleActiveText: "text-white",
+    defaultAccent: "#131313",
   },
 } satisfies Record<Variant, Record<string, unknown>>;
 
@@ -50,6 +53,7 @@ export function UnitDetailModal({
   projectId,
   availableUnits,
   variant,
+  accentColor,
   onClose,
 }: {
   unit: Unit;
@@ -58,9 +62,11 @@ export function UnitDetailModal({
   projectId: string;
   availableUnits: { id: string; unit_number: string }[];
   variant: Variant;
+  accentColor?: string | null;
   onClose: () => void;
 }) {
   const s = V[variant];
+  const accent = accentColor ?? s.defaultAccent;
   const floorPlanImage = unit.floor_plan_image_url ?? floorPlan?.image_url ?? null;
   const render3dImage = unit.floor_plan_render_3d_url ?? floorPlan?.render_3d_url ?? null;
   const [showRender, setShowRender] = useState(false);
@@ -121,14 +127,16 @@ export function UnitDetailModal({
                   <button
                     type="button"
                     onClick={() => setShowRender(false)}
-                    className={`rounded-full border px-3 py-1 text-xs font-medium ${!showRender ? s.toggleActive : s.toggle}`}
+                    className={`rounded-full border px-3 py-1 text-xs font-medium ${!showRender ? s.toggleActiveText : s.toggle}`}
+                    style={!showRender ? { borderColor: accent, backgroundColor: accent } : undefined}
                   >
                     2D alaprajz
                   </button>
                   <button
                     type="button"
                     onClick={() => setShowRender(true)}
-                    className={`rounded-full border px-3 py-1 text-xs font-medium ${showRender ? s.toggleActive : s.toggle}`}
+                    className={`rounded-full border px-3 py-1 text-xs font-medium ${showRender ? s.toggleActiveText : s.toggle}`}
+                    style={showRender ? { borderColor: accent, backgroundColor: accent } : undefined}
                   >
                     3D render
                   </button>

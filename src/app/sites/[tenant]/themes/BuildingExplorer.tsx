@@ -79,6 +79,7 @@ export function BuildingExplorer({
   floorPlans,
   roomsByUnit,
   variant,
+  accentColor,
 }: {
   projectId: string;
   buildingImageUrl: string;
@@ -87,6 +88,7 @@ export function BuildingExplorer({
   floorPlans: FloorPlan[];
   roomsByUnit: Record<string, UnitRoom[]>;
   variant: Variant;
+  accentColor?: string | null;
 }) {
   const s = V[variant];
   const [activeFloor, setActiveFloor] = useState<number | null>(null);
@@ -183,6 +185,7 @@ export function BuildingExplorer({
           projectId={projectId}
           availableUnits={availableUnits}
           variant={variant}
+          accentColor={accentColor}
           onClose={() => setActiveUnit(null)}
         />
       ) : null}
