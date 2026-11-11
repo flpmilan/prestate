@@ -16,13 +16,16 @@ export default async function DashboardLayout({ children }: { children: React.Re
     .maybeSingle();
 
   return (
-    <div className="flex min-h-full flex-1 flex-col bg-zinc-50">
-      <header className="flex items-center justify-between border-b border-zinc-200 bg-white px-6 py-3">
-        <Link href="/dashboard" className="font-semibold text-zinc-900">
-          Prestate{organization ? ` · ${organization.name}` : ""}
+    <div className="flex min-h-full flex-1 flex-col bg-[#FAF7F2]">
+      <header className="flex items-center justify-between border-b border-[#E8E1D4] bg-[#FDFBF8] px-6 py-3.5">
+        <Link href="/dashboard" className="flex items-baseline gap-2">
+          <span className="text-base font-semibold tracking-tight text-[#1C1A17]" style={{ fontFamily: "var(--font-fraunces)" }}>
+            Prestate
+          </span>
+          {organization ? <span className="text-sm text-[#9C8F7E]">· {organization.name}</span> : null}
         </Link>
         <form action={logout}>
-          <button type="submit" className="text-sm text-zinc-500 hover:text-zinc-900">
+          <button type="submit" className="text-sm font-medium text-[#6B6354] hover:text-[#1C1A17]">
             Kijelentkezés
           </button>
         </form>

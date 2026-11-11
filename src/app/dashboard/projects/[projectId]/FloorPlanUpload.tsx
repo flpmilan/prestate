@@ -59,22 +59,22 @@ export function FloorPlanUpload({
   }
 
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-dashed border-zinc-300 p-4">
-      {error ? <p className="text-xs text-red-600">{error}</p> : null}
+    <div className="flex flex-col gap-2 rounded-lg border border-dashed border-[#D9CFBB] bg-[#FBF8F3] p-4">
+      {error ? <p className="text-xs text-[#A8402A]">{error}</p> : null}
       <div className="flex flex-wrap items-center gap-2">
         <input
           type="text"
           placeholder="Alaprajz neve, pl. 'A típus'"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm"
+          className="rounded-md border border-[#E3DCCB] bg-white px-3 py-1.5 text-sm"
         />
-        <input ref={inputRef} type="file" accept="image/*" className="text-sm" />
+        <input ref={inputRef} type="file" accept="image/*" className="text-sm text-[#6B6354]" />
         <button
           type="button"
           disabled={busy}
           onClick={handleUpload}
-          className="rounded-md bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-zinc-800"
+          className="rounded-md bg-[#1C1A17] px-3 py-1.5 text-sm font-medium text-white hover:bg-[#2E2A24] disabled:opacity-50"
         >
           {busy ? "Feltöltés..." : "Alaprajz feltöltése"}
         </button>

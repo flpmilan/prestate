@@ -145,41 +145,41 @@ export function HotspotEditor({
 
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-xs text-zinc-500">
+      <p className="text-xs text-[#6B6354]">
         Húzással jelölj ki egy területet a képen egy emelethez, majd add meg az emelet számát. Vagy
         kérj AI-javaslatot, amit utána finomíthatsz.
       </p>
 
-      <div className="flex flex-col gap-2 rounded-md border border-dashed border-zinc-300 bg-zinc-50 p-3">
-        {aiError ? <p className="text-xs text-red-600">{aiError}</p> : null}
+      <div className="flex flex-col gap-2 rounded-md border border-dashed border-[#D9CFBB] bg-[#FBF8F3] p-3">
+        {aiError ? <p className="text-xs text-[#A8402A]">{aiError}</p> : null}
         <div className="flex flex-wrap items-center gap-2">
-          <label className="flex items-center gap-2 text-sm text-zinc-700">
+          <label className="flex items-center gap-2 text-sm text-[#1C1A17]">
             Hány emeletet jelöljön ki?
             <input
               type="number"
               min={1}
               value={aiFloors}
               onChange={(e) => setAiFloors(e.target.value)}
-              className="w-20 rounded-md border border-zinc-300 px-2 py-1 text-sm"
+              className="w-20 rounded-md border border-[#E3DCCB] bg-white px-2 py-1 text-sm"
             />
           </label>
           <button
             type="button"
             disabled={aiBusy}
             onClick={handleAiSuggest}
-            className="rounded-md bg-emerald-600 px-3 py-1.5 text-sm font-medium text-white hover:bg-emerald-500"
+            className="rounded-md bg-[#9C5636] px-3 py-1.5 text-sm font-medium text-white hover:bg-[#86472C] disabled:opacity-50"
           >
             {aiBusy ? "AI elemzi a képet..." : "AI javaslat kérése"}
           </button>
         </div>
-        <label className="flex flex-col gap-1 text-sm text-zinc-700">
+        <label className="flex flex-col gap-1 text-sm text-[#1C1A17]">
           Kiegészítő instrukció az AI-nak (opcionális)
           <textarea
             value={aiInstructions}
             onChange={(e) => setAiInstructions(e.target.value)}
             rows={2}
             placeholder="pl. a földszint üzletsor, azt hagyd ki; a tetőtérben is vannak lakások, azt vedd külön emeletnek"
-            className="rounded-md border border-zinc-300 px-2 py-1.5 text-sm"
+            className="rounded-md border border-[#E3DCCB] bg-white px-2 py-1.5 text-sm"
           />
         </label>
       </div>
@@ -189,7 +189,7 @@ export function HotspotEditor({
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
-        className="relative w-full cursor-crosshair select-none overflow-hidden rounded-lg border border-zinc-200"
+        className="relative w-full cursor-crosshair select-none overflow-hidden rounded-lg border border-[#E8E1D4]"
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={imageUrl} alt="Épület látványterve" className="block w-full" draggable={false} />
@@ -199,9 +199,9 @@ export function HotspotEditor({
             key={h.id}
             data-hotspot
             style={{ left: `${h.x}%`, top: `${h.y}%`, width: `${h.w}%`, height: `${h.h}%` }}
-            className="absolute flex items-start justify-between gap-1 border-2 border-emerald-500 bg-emerald-500/15 p-1"
+            className="absolute flex items-start justify-between gap-1 border-2 border-[#9C5636] bg-[#9C5636]/15 p-1"
           >
-            <span className="rounded bg-emerald-600 px-1.5 py-0.5 text-[11px] font-medium text-white">
+            <span className="rounded bg-[#9C5636] px-1.5 py-0.5 text-[11px] font-medium text-white">
               {h.label ?? `${h.floor}. emelet`}
             </span>
             <button
@@ -210,7 +210,7 @@ export function HotspotEditor({
                 e.stopPropagation();
                 deleteHotspot(h.id);
               }}
-              className="rounded bg-white/90 px-1.5 text-xs font-medium text-red-600"
+              className="rounded bg-white/90 px-1.5 text-xs font-medium text-[#A8402A]"
             >
               ×
             </button>
@@ -220,28 +220,28 @@ export function HotspotEditor({
         {draft ? (
           <div
             style={{ left: `${draft.x}%`, top: `${draft.y}%`, width: `${draft.w}%`, height: `${draft.h}%` }}
-            className="absolute border-2 border-dashed border-zinc-900 bg-zinc-900/10"
+            className="absolute border-2 border-dashed border-[#1C1A17] bg-[#1C1A17]/10"
           />
         ) : null}
       </div>
 
       {draft && draft.w >= 2 && draft.h >= 2 ? (
-        <div className="flex flex-wrap items-center gap-2 rounded-md border border-zinc-200 bg-zinc-50 p-3">
-          {error ? <p className="w-full text-xs text-red-600">{error}</p> : null}
-          <label className="flex items-center gap-2 text-sm text-zinc-700">
+        <div className="flex flex-wrap items-center gap-2 rounded-md border border-[#E8E1D4] bg-[#FBF8F3] p-3">
+          {error ? <p className="w-full text-xs text-[#A8402A]">{error}</p> : null}
+          <label className="flex items-center gap-2 text-sm text-[#1C1A17]">
             Emelet száma
             <input
               type="number"
               value={floorInput}
               onChange={(e) => setFloorInput(e.target.value)}
-              className="w-20 rounded-md border border-zinc-300 px-2 py-1 text-sm"
+              className="w-20 rounded-md border border-[#E3DCCB] bg-white px-2 py-1 text-sm"
             />
           </label>
           <button
             type="button"
             disabled={busy}
             onClick={saveDraft}
-            className="rounded-md bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-zinc-800"
+            className="rounded-md bg-[#1C1A17] px-3 py-1.5 text-sm font-medium text-white hover:bg-[#2E2A24] disabled:opacity-50"
           >
             {busy ? "Mentés..." : "Hotspot mentése"}
           </button>
@@ -252,7 +252,7 @@ export function HotspotEditor({
               setFloorInput("");
               setError(null);
             }}
-            className="rounded-md border border-zinc-300 px-3 py-1.5 text-sm text-zinc-700 hover:bg-zinc-100"
+            className="rounded-md border border-[#E3DCCB] px-3 py-1.5 text-sm text-[#1C1A17] hover:bg-[#F3EFE7]"
           >
             Mégse
           </button>

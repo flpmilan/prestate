@@ -29,7 +29,7 @@ export function UnitStatusSelect({ unitId, status }: { unitId: string; status: U
           router.refresh();
         });
       }}
-      className="rounded-md border border-zinc-300 px-2 py-1 text-xs"
+      className="rounded-md border border-[#E3DCCB] bg-white px-2 py-1 text-xs text-[#1C1A17]"
     >
       {OPTIONS.map((opt) => (
         <option key={opt.value} value={opt.value}>

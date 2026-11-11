@@ -54,15 +54,15 @@ export function BuildingImageUpload({
   }
 
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-dashed border-zinc-300 p-4">
-      {error ? <p className="text-xs text-red-600">{error}</p> : null}
-      <div className="flex flex-wrap items-center gap-2">
-        <input ref={inputRef} type="file" accept="image/*" className="text-sm" />
+    <div className="flex flex-col gap-2 rounded-lg border border-dashed border-[#D9CFBB] bg-[#FBF8F3] p-4">
+      {error ? <p className="text-xs text-[#A8402A]">{error}</p> : null}
+      <div className="flex flex-wrap items-center gap-3">
+        <input ref={inputRef} type="file" accept="image/*" className="text-sm text-[#6B6354]" />
         <button
           type="button"
           disabled={busy}
           onClick={handleUpload}
-          className="rounded-md bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-zinc-800"
+          className="rounded-md bg-[#1C1A17] px-3 py-1.5 text-sm font-medium text-white hover:bg-[#2E2A24] disabled:opacity-50"
         >
           {busy ? "Feltöltés..." : "Látványterv feltöltése"}
         </button>

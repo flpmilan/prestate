@@ -67,18 +67,18 @@ export function GalleryUpload({
 
   return (
     <div className="flex flex-col gap-3">
-      {error ? <p className="text-xs text-red-600">{error}</p> : null}
+      {error ? <p className="text-xs text-[#A8402A]">{error}</p> : null}
 
       {images.length > 0 ? (
         <div className="flex flex-wrap gap-3">
           {images.map((img) => (
-            <div key={img.id} className="relative h-20 w-28 overflow-hidden rounded-md border border-zinc-200">
+            <div key={img.id} className="relative h-20 w-28 overflow-hidden rounded-md border border-[#E8E1D4]">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={img.image_url} alt="Hero galéria kép" className="h-full w-full object-cover" />
               <button
                 type="button"
                 onClick={() => removeImage(img.id)}
-                className="absolute right-1 top-1 rounded bg-white/90 px-1.5 text-xs font-medium text-red-600"
+                className="absolute right-1 top-1 rounded bg-white/90 px-1.5 text-xs font-medium text-[#A8402A]"
               >
                 ×
               </button>
@@ -87,13 +87,13 @@ export function GalleryUpload({
         </div>
       ) : null}
 
-      <div className="flex flex-wrap items-center gap-2 rounded-lg border border-dashed border-zinc-300 p-4">
-        <input ref={inputRef} type="file" accept="image/*" multiple className="text-sm" />
+      <div className="flex flex-wrap items-center gap-3 rounded-lg border border-dashed border-[#D9CFBB] bg-[#FBF8F3] p-4">
+        <input ref={inputRef} type="file" accept="image/*" multiple className="text-sm text-[#6B6354]" />
         <button
           type="button"
           disabled={busy}
           onClick={handleUpload}
-          className="rounded-md bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-zinc-800"
+          className="rounded-md bg-[#1C1A17] px-3 py-1.5 text-sm font-medium text-white hover:bg-[#2E2A24] disabled:opacity-50"
         >
           {busy ? "Feltöltés..." : "Képek hozzáadása"}
         </button>

@@ -11,6 +11,7 @@ import { UnitsTable } from "./UnitsTable";
 import { GalleryUpload } from "./GalleryUpload";
 import { FloorPlanCard } from "./FloorPlanCard";
 import type { UnitRoom } from "@/lib/types";
+import { ui } from "@/lib/ui";
 
 const ROOT_DOMAIN = process.env.NEXT_PUBLIC_ROOT_DOMAIN || "localhost:3000";
 
@@ -82,45 +83,39 @@ export default async function ProjectDetailPage({
 
   return (
     <div className="mx-auto max-w-4xl px-6 py-10">
-      <Link href="/dashboard" className="text-sm text-zinc-500 hover:text-zinc-900">
+      <Link href="/dashboard" className={ui.linkMuted}>
         ← Vissza a projektekhez
       </Link>
 
-      <div className="mt-2 flex items-start justify-between gap-4">
+      <div className="mt-3 flex items-start justify-between gap-4">
         <div>
-          <h1 className="text-xl font-semibold text-zinc-900">{project.name}</h1>
-          {project.address ? <p className="text-sm text-zinc-500">{project.address}</p> : null}
-          <a
-            href={previewUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="mt-1 inline-block text-sm text-blue-600 hover:underline"
-          >
+          <h1 className="text-xl font-semibold text-[#1C1A17]" style={{ fontFamily: "var(--font-fraunces)" }}>
+            {project.name}
+          </h1>
+          {project.address ? <p className="text-sm text-[#6B6354]">{project.address}</p> : null}
+          <a href={previewUrl} target="_blank" rel="noreferrer" className={`mt-1 inline-block ${ui.link}`}>
             {project.custom_domain ?? publicUrl.replace("//", "")} →
           </a>
         </div>
         <div className="flex items-center gap-3">
-          <Link
-            href={`/dashboard/projects/${project.id}/editor`}
-            className="rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
-          >
+          <Link href={`/dashboard/projects/${project.id}/editor`} className={ui.buttonSecondary}>
             Élő szerkesztő
           </Link>
           <PublishToggle projectId={project.id} status={project.status} />
         </div>
       </div>
 
-      <section className="mt-8">
-        <h2 className="text-sm font-semibold text-zinc-900">Sablon</h2>
-        <p className="mt-1 text-xs text-zinc-500">A publikus oldal vizuális stílusa.</p>
+      <section className={`mt-8 p-6 ${ui.card}`}>
+        <h2 className={ui.sectionLabel}>Sablon</h2>
+        <p className="mt-1 text-xs text-[#9C8F7E]">A publikus oldal vizuális stílusa.</p>
         <div className="mt-3">
           <ThemeSelect projectId={project.id} theme={project.theme} />
         </div>
       </section>
 
-      <section className="mt-8">
-        <h2 className="text-sm font-semibold text-zinc-900">Hero galéria</h2>
-        <p className="mt-1 text-xs text-zinc-500">
+      <section className={`mt-6 p-6 ${ui.card}`}>
+        <h2 className={ui.sectionLabel}>Hero galéria</h2>
+        <p className="mt-1 text-xs text-[#9C8F7E]">
           Tölts fel képeket (épület, lakások látványtervei) — a publikus oldal hero szekciójában
           automatikusan, animálva váltakoznak.
         </p>
@@ -129,9 +124,9 @@ export default async function ProjectDetailPage({
         </div>
       </section>
 
-      <section className="mt-8">
-        <h2 className="text-sm font-semibold text-zinc-900">Épület látványterve</h2>
-        <p className="mt-1 text-xs text-zinc-500">
+      <section className={`mt-6 p-6 ${ui.card}`}>
+        <h2 className={ui.sectionLabel}>Épület látványterve</h2>
+        <p className="mt-1 text-xs text-[#9C8F7E]">
           Tölts fel egy látványtervet, és jelölj ki rajta emeletenként egy területet — az
           érdeklődők ezen böngészhetnek majd a publikus oldalon.
         </p>
@@ -147,9 +142,9 @@ export default async function ProjectDetailPage({
         </div>
       </section>
 
-      <section className="mt-8">
-        <h2 className="text-sm font-semibold text-zinc-900">Alaprajzok</h2>
-        <div className="mt-2 flex flex-wrap gap-3">
+      <section className={`mt-6 p-6 ${ui.card}`}>
+        <h2 className={ui.sectionLabel}>Alaprajzok</h2>
+        <div className="mt-3 flex flex-wrap gap-3">
           {(floorPlans ?? []).map((fp) => (
             <FloorPlanCard
               key={fp.id}
@@ -165,8 +160,8 @@ export default async function ProjectDetailPage({
         </div>
       </section>
 
-      <section className="mt-8">
-        <h2 className="text-sm font-semibold text-zinc-900">Lakáslista</h2>
+      <section className={`mt-6 p-6 ${ui.card}`}>
+        <h2 className={ui.sectionLabel}>Lakáslista</h2>
         <div className="mt-3">
           <UnitsImport projectId={project.id} />
         </div>
@@ -179,28 +174,28 @@ export default async function ProjectDetailPage({
             organizationId={project.organization_id}
           />
         ) : (
-          <p className="mt-4 text-sm text-zinc-500">Még nincs feltöltött lakás.</p>
+          <p className="mt-4 text-sm text-[#9C8F7E]">Még nincs feltöltött lakás.</p>
         )}
       </section>
 
-      <section className="mt-8">
-        <h2 className="text-sm font-semibold text-zinc-900">Beérkezett érdeklődések</h2>
+      <section className={`mt-6 p-6 ${ui.card}`}>
+        <h2 className={ui.sectionLabel}>Beérkezett érdeklődések</h2>
         {leads && leads.length > 0 ? (
           <ul className="mt-3 flex flex-col gap-2">
             {leads.map((lead) => (
-              <li key={lead.id} className="rounded-md border border-zinc-200 bg-white p-3 text-sm">
-                <p className="font-medium text-zinc-900">
+              <li key={lead.id} className={`p-3 text-sm ${ui.cardMuted}`}>
+                <p className="font-medium text-[#1C1A17]">
                   {lead.name} · {lead.email} {lead.phone ? `· ${lead.phone}` : ""}
                 </p>
-                {lead.message ? <p className="mt-1 text-zinc-600">{lead.message}</p> : null}
-                <p className="mt-1 text-xs text-zinc-400">
+                {lead.message ? <p className="mt-1 text-[#6B6354]">{lead.message}</p> : null}
+                <p className="mt-1 text-xs text-[#9C8F7E]">
                   {new Date(lead.created_at).toLocaleString("hu-HU")}
                 </p>
               </li>
             ))}
           </ul>
         ) : (
-          <p className="mt-3 text-sm text-zinc-500">Még nem érkezett ajánlatkérés.</p>
+          <p className="mt-3 text-sm text-[#9C8F7E]">Még nem érkezett ajánlatkérés.</p>
         )}
       </section>
     </div>

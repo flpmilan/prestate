@@ -110,10 +110,10 @@ export function UnitDetailsPanel({
   }
 
   return (
-    <div className="flex flex-col gap-4 rounded-md border border-zinc-200 bg-zinc-50 p-4">
+    <div className="flex flex-col gap-4 rounded-md border border-[#E8E1D4] bg-[#FBF8F3] p-4">
       <div>
-        <h3 className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Saját alaprajz</h3>
-        {error ? <p className="mt-1 text-xs text-red-600">{error}</p> : null}
+        <h3 className="text-xs font-semibold uppercase tracking-wide text-[#9C8F7E]">Saját alaprajz</h3>
+        {error ? <p className="mt-1 text-xs text-[#A8402A]">{error}</p> : null}
         <div className="mt-2 flex flex-wrap items-center gap-3">
           {floorPlanImageUrl ? (
             <div className="flex items-center gap-2">
@@ -121,23 +121,23 @@ export function UnitDetailsPanel({
               <img
                 src={showRender && floorPlanRender3dUrl ? floorPlanRender3dUrl : floorPlanImageUrl}
                 alt="Saját alaprajz"
-                className="h-16 w-16 rounded border border-zinc-200 object-contain bg-white"
+                className="h-16 w-16 rounded border border-[#E8E1D4] object-contain bg-white"
               />
               <button
                 type="button"
                 onClick={removeFloorPlan}
-                className="text-xs font-medium text-red-600 hover:underline"
+                className="text-xs font-medium text-[#A8402A] hover:underline"
               >
                 Eltávolítás
               </button>
             </div>
           ) : null}
-          <input ref={fileInputRef} type="file" accept="image/*" className="text-xs" />
+          <input ref={fileInputRef} type="file" accept="image/*" className="text-xs text-[#6B6354]" />
           <button
             type="button"
             disabled={uploadBusy}
             onClick={uploadFloorPlan}
-            className="rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-800"
+            className="rounded-md bg-[#1C1A17] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#2E2A24] disabled:opacity-50"
           >
             {uploadBusy ? "Feltöltés..." : floorPlanImageUrl ? "Csere" : "Feltöltés"}
           </button>
@@ -148,7 +148,7 @@ export function UnitDetailsPanel({
               <button
                 type="button"
                 onClick={() => setShowRender((v) => !v)}
-                className="text-xs font-medium text-blue-600 hover:underline"
+                className="text-xs font-medium text-[#9C5636] hover:underline"
               >
                 {showRender ? "2D alaprajz megtekintése" : "3D render megtekintése"}
               </button>
@@ -157,7 +157,7 @@ export function UnitDetailsPanel({
                 type="button"
                 disabled={renderBusy}
                 onClick={generateRender}
-                className="text-xs font-medium text-blue-600 hover:underline disabled:opacity-50"
+                className="text-xs font-medium text-[#9C5636] hover:underline disabled:opacity-50"
               >
                 {renderBusy ? "3D render generálása..." : "3D render generálása AI-val"}
               </button>
@@ -167,7 +167,7 @@ export function UnitDetailsPanel({
       </div>
 
       <div>
-        <h3 className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Helyiségek</h3>
+        <h3 className="text-xs font-semibold uppercase tracking-wide text-[#9C8F7E]">Helyiségek</h3>
         <div className="mt-2 flex flex-col gap-2">
           {rooms.map((room) => (
             <div key={room.id} className="flex items-center gap-2">
@@ -177,7 +177,7 @@ export function UnitDetailsPanel({
                   const value = e.target.value.trim();
                   if (value && value !== room.name) updateRoom(room.id, { name: value });
                 }}
-                className="w-40 rounded-md border border-zinc-300 px-2 py-1 text-sm"
+                className="w-40 rounded-md border border-[#E3DCCB] bg-white px-2 py-1 text-sm"
               />
               <input
                 type="number"
@@ -188,13 +188,13 @@ export function UnitDetailsPanel({
                   if (value !== room.area_sqm) updateRoom(room.id, { area_sqm: value });
                 }}
                 placeholder="m²"
-                className="w-20 rounded-md border border-zinc-300 px-2 py-1 text-sm"
+                className="w-20 rounded-md border border-[#E3DCCB] bg-white px-2 py-1 text-sm"
               />
-              <span className="text-xs text-zinc-400">m²</span>
+              <span className="text-xs text-[#9C8F7E]">m²</span>
               <button
                 type="button"
                 onClick={() => deleteRoom(room.id)}
-                className="ml-1 text-xs font-medium text-red-600 hover:underline"
+                className="ml-1 text-xs font-medium text-[#A8402A] hover:underline"
               >
                 Törlés
               </button>
@@ -203,7 +203,7 @@ export function UnitDetailsPanel({
           <button
             type="button"
             onClick={addRoom}
-            className="mt-1 self-start rounded-md border border-zinc-300 px-3 py-1.5 text-xs font-medium text-zinc-700 hover:bg-zinc-100"
+            className="mt-1 self-start rounded-md border border-[#E3DCCB] bg-white px-3 py-1.5 text-xs font-medium text-[#1C1A17] hover:bg-[#F3EFE7]"
           >
             + Helyiség hozzáadása
           </button>

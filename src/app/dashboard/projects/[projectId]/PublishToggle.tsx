@@ -20,7 +20,7 @@ export function PublishToggle({
 
   return (
     <div className="flex items-center gap-2">
-      {error ? <span className="text-xs text-red-600">{error}</span> : null}
+      {error ? <span className="text-xs text-[#A8402A]">{error}</span> : null}
       <button
         disabled={pending}
         onClick={() =>
@@ -34,10 +34,10 @@ export function PublishToggle({
             }
           })
         }
-        className={`rounded-md px-4 py-2 text-sm font-medium ${
+        className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
           status === "published"
-            ? "border border-zinc-300 text-zinc-700 hover:bg-zinc-50"
-            : "bg-emerald-600 text-white hover:bg-emerald-500"
+            ? "border border-[#E3DCCB] bg-white text-[#1C1A17] hover:bg-[#F3EFE7]"
+            : "bg-[#9C5636] text-white hover:bg-[#86472C]"
         }`}
       >
         {pending ? "..." : status === "published" ? "Vissza vázlatba" : "Publikálás"}

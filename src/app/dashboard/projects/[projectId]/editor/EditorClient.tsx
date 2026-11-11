@@ -98,13 +98,13 @@ export function EditorClient({
   const sorted = [...blocks].sort((a, b) => a.position - b.position);
 
   return (
-    <div className="flex h-screen flex-col bg-zinc-50">
-      <header className="flex items-center justify-between border-b border-zinc-200 bg-white px-6 py-3">
+    <div className="flex h-screen flex-col bg-[#FAF7F2]">
+      <header className="flex items-center justify-between border-b border-[#E8E1D4] bg-[#FDFBF8] px-6 py-3">
         <div className="flex items-center gap-4">
-          <Link href={`/dashboard/projects/${projectId}`} className="text-sm text-zinc-500 hover:text-zinc-900">
+          <Link href={`/dashboard/projects/${projectId}`} className="text-sm text-[#6B6354] hover:text-[#1C1A17]">
             ← Vissza
           </Link>
-          <span className="text-sm font-medium text-zinc-900">Élő szerkesztő · {projectName}</span>
+          <span className="text-sm font-medium text-[#1C1A17]">Élő szerkesztő · {projectName}</span>
         </div>
       </header>
 
@@ -116,37 +116,37 @@ export function EditorClient({
           title="Oldal előnézet"
         />
 
-        <div className="flex w-[380px] shrink-0 flex-col border-l border-zinc-200 bg-white">
-          <div className="flex border-b border-zinc-200 text-sm">
+        <div className="flex w-[380px] shrink-0 flex-col border-l border-[#E8E1D4] bg-white">
+          <div className="flex border-b border-[#E8E1D4] text-sm">
             <button
               type="button"
               onClick={() => setTab("ai")}
-              className={`flex-1 px-3 py-2.5 font-medium ${tab === "ai" ? "border-b-2 border-zinc-900 text-zinc-900" : "text-zinc-500"}`}
+              className={`flex-1 px-3 py-2.5 font-medium ${tab === "ai" ? "border-b-2 border-[#9C5636] text-[#1C1A17]" : "text-[#9C8F7E]"}`}
             >
               AI chat
             </button>
             <button
               type="button"
               onClick={() => setTab("sections")}
-              className={`flex-1 px-3 py-2.5 font-medium ${tab === "sections" ? "border-b-2 border-zinc-900 text-zinc-900" : "text-zinc-500"}`}
+              className={`flex-1 px-3 py-2.5 font-medium ${tab === "sections" ? "border-b-2 border-[#9C5636] text-[#1C1A17]" : "text-[#9C8F7E]"}`}
             >
               Szekciók
             </button>
             <button
               type="button"
               onClick={() => setTab("appearance")}
-              className={`flex-1 px-3 py-2.5 font-medium ${tab === "appearance" ? "border-b-2 border-zinc-900 text-zinc-900" : "text-zinc-500"}`}
+              className={`flex-1 px-3 py-2.5 font-medium ${tab === "appearance" ? "border-b-2 border-[#9C5636] text-[#1C1A17]" : "text-[#9C8F7E]"}`}
             >
               Megjelenés
             </button>
           </div>
 
           <div className="flex-1 overflow-y-auto p-4">
-            {error ? <p className="mb-3 rounded-md bg-red-50 px-3 py-2 text-xs text-red-700">{error}</p> : null}
+            {error ? <p className="mb-3 rounded-md bg-[#FBEAE3] px-3 py-2 text-xs text-[#A8402A]">{error}</p> : null}
 
             {tab === "ai" ? (
               <div className="flex flex-col gap-3">
-                <p className="text-xs text-zinc-500">
+                <p className="text-xs text-[#6B6354]">
                   Írd le, mit változtassunk (pl. &quot;adj hozzá egy szekciót a környékről&quot;, &quot;legyen
                   kékes a kiemelő szín&quot;).
                 </p>
@@ -155,18 +155,18 @@ export function EditorClient({
                   onChange={(e) => setInstruction(e.target.value)}
                   rows={4}
                   placeholder="Mit változtassunk?"
-                  className="rounded-md border border-zinc-300 px-3 py-2 text-sm outline-none focus:border-zinc-500"
+                  className="rounded-md border border-[#E3DCCB] bg-white px-3 py-2 text-sm outline-none focus:border-[#9C5636] focus:ring-2 focus:ring-[#9C5636]/15"
                 />
                 <button
                   type="button"
                   disabled={busy}
                   onClick={submitInstruction}
-                  className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
+                  className="rounded-md bg-[#9C5636] px-4 py-2 text-sm font-medium text-white hover:bg-[#86472C] disabled:opacity-50"
                 >
                   {busy ? "Dolgozom rajta..." : "Küldés"}
                 </button>
                 {lastApplied.length > 0 ? (
-                  <ul className="mt-1 flex flex-col gap-1 text-xs text-emerald-700">
+                  <ul className="mt-1 flex flex-col gap-1 text-xs text-[#3D6B3A]">
                     {lastApplied.map((line, i) => (
                       <li key={i}>✓ {line}</li>
                     ))}
@@ -178,20 +178,20 @@ export function EditorClient({
             {tab === "sections" ? (
               <div className="flex flex-col gap-3">
                 {sorted.map((block, i) => (
-                  <div key={block.id} className="rounded-md border border-zinc-200 p-3">
+                  <div key={block.id} className="rounded-md border border-[#E8E1D4] p-3">
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs font-medium text-zinc-900">
+                      <span className="text-xs font-medium text-[#1C1A17]">
                         {BLOCK_LABELS[block.type] ?? block.type}
                         {block.type === "text" && block.title ? ` — ${block.title}` : ""}
                       </span>
-                      {!block.visible ? <span className="text-[10px] text-zinc-400">elrejtve</span> : null}
+                      {!block.visible ? <span className="text-[10px] text-[#9C8F7E]">elrejtve</span> : null}
                     </div>
                     <div className="mt-2 flex flex-wrap items-center gap-2">
                       <button
                         type="button"
                         disabled={busy || i === 0}
                         onClick={() => callAction("move", { id: block.id, direction: "up" })}
-                        className="rounded border border-zinc-300 px-2 py-1 text-xs text-zinc-600 disabled:opacity-30"
+                        className="rounded border border-[#E3DCCB] px-2 py-1 text-xs text-[#6B6354] disabled:opacity-30"
                       >
                         ↑
                       </button>
@@ -199,7 +199,7 @@ export function EditorClient({
                         type="button"
                         disabled={busy || i === sorted.length - 1}
                         onClick={() => callAction("move", { id: block.id, direction: "down" })}
-                        className="rounded border border-zinc-300 px-2 py-1 text-xs text-zinc-600 disabled:opacity-30"
+                        className="rounded border border-[#E3DCCB] px-2 py-1 text-xs text-[#6B6354] disabled:opacity-30"
                       >
                         ↓
                       </button>
@@ -207,7 +207,7 @@ export function EditorClient({
                         type="button"
                         disabled={busy}
                         onClick={() => callAction("visible", { id: block.id, visible: !block.visible })}
-                        className="rounded border border-zinc-300 px-2 py-1 text-xs text-zinc-600"
+                        className="rounded border border-[#E3DCCB] px-2 py-1 text-xs text-[#6B6354]"
                       >
                         {block.visible ? "Elrejtés" : "Megjelenítés"}
                       </button>
@@ -220,7 +220,7 @@ export function EditorClient({
                               setEditTitle(block.title ?? "");
                               setEditBody(block.body ?? "");
                             }}
-                            className="rounded border border-zinc-300 px-2 py-1 text-xs text-zinc-600"
+                            className="rounded border border-[#E3DCCB] px-2 py-1 text-xs text-[#6B6354]"
                           >
                             Szerkesztés
                           </button>
@@ -228,7 +228,7 @@ export function EditorClient({
                             type="button"
                             disabled={busy}
                             onClick={() => callAction("delete", { id: block.id })}
-                            className="rounded border border-red-200 px-2 py-1 text-xs text-red-600"
+                            className="rounded border border-[#E7B9A6] px-2 py-1 text-xs text-[#A8402A]"
                           >
                             Törlés
                           </button>
@@ -242,14 +242,14 @@ export function EditorClient({
                           value={editTitle}
                           onChange={(e) => setEditTitle(e.target.value)}
                           placeholder="Cím"
-                          className="rounded-md border border-zinc-300 px-2 py-1.5 text-sm"
+                          className="rounded-md border border-[#E3DCCB] px-2 py-1.5 text-sm"
                         />
                         <textarea
                           value={editBody}
                           onChange={(e) => setEditBody(e.target.value)}
                           rows={3}
                           placeholder="Szöveg"
-                          className="rounded-md border border-zinc-300 px-2 py-1.5 text-sm"
+                          className="rounded-md border border-[#E3DCCB] px-2 py-1.5 text-sm"
                         />
                         <div className="flex gap-2">
                           <button
@@ -259,14 +259,14 @@ export function EditorClient({
                               await callAction("update_text", { id: block.id, title: editTitle, body: editBody });
                               setEditingId(null);
                             }}
-                            className="rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white"
+                            className="rounded-md bg-[#1C1A17] px-3 py-1.5 text-xs font-medium text-white"
                           >
                             Mentés
                           </button>
                           <button
                             type="button"
                             onClick={() => setEditingId(null)}
-                            className="rounded-md border border-zinc-300 px-3 py-1.5 text-xs text-zinc-600"
+                            className="rounded-md border border-[#E3DCCB] px-3 py-1.5 text-xs text-[#6B6354]"
                           >
                             Mégse
                           </button>
@@ -276,20 +276,20 @@ export function EditorClient({
                   </div>
                 ))}
 
-                <div className="mt-2 rounded-md border border-dashed border-zinc-300 p-3">
-                  <p className="text-xs font-medium text-zinc-700">Új szöveges szekció</p>
+                <div className="mt-2 rounded-md border border-dashed border-[#D9CFBB] bg-[#FBF8F3] p-3">
+                  <p className="text-xs font-medium text-[#1C1A17]">Új szöveges szekció</p>
                   <input
                     value={newTitle}
                     onChange={(e) => setNewTitle(e.target.value)}
                     placeholder="Cím"
-                    className="mt-2 w-full rounded-md border border-zinc-300 px-2 py-1.5 text-sm"
+                    className="mt-2 w-full rounded-md border border-[#E3DCCB] bg-white px-2 py-1.5 text-sm"
                   />
                   <textarea
                     value={newBody}
                     onChange={(e) => setNewBody(e.target.value)}
                     rows={3}
                     placeholder="Szöveg"
-                    className="mt-2 w-full rounded-md border border-zinc-300 px-2 py-1.5 text-sm"
+                    className="mt-2 w-full rounded-md border border-[#E3DCCB] bg-white px-2 py-1.5 text-sm"
                   />
                   <button
                     type="button"
@@ -299,7 +299,7 @@ export function EditorClient({
                       setNewTitle("");
                       setNewBody("");
                     }}
-                    className="mt-2 rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white disabled:opacity-50"
+                    className="mt-2 rounded-md bg-[#9C5636] px-3 py-1.5 text-xs font-medium text-white hover:bg-[#86472C] disabled:opacity-50"
                   >
                     Hozzáadás
                   </button>
@@ -309,13 +309,13 @@ export function EditorClient({
 
             {tab === "appearance" ? (
               <div className="flex flex-col gap-3">
-                <label className="flex flex-col gap-1 text-sm text-zinc-700">
+                <label className="flex flex-col gap-1 text-sm text-[#1C1A17]">
                   Kiemelő szín (accent)
                   <input
                     type="color"
                     value={accentColor ?? "#000000"}
                     onChange={(e) => setAccentColorState(e.target.value)}
-                    className="h-10 w-20 rounded border border-zinc-300"
+                    className="h-10 w-20 rounded border border-[#E3DCCB]"
                   />
                 </label>
                 <div className="flex gap-2">
@@ -323,7 +323,7 @@ export function EditorClient({
                     type="button"
                     disabled={busy || !accentColor}
                     onClick={() => callAction("set_accent", { accent: accentColor })}
-                    className="rounded-md bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white disabled:opacity-50"
+                    className="rounded-md bg-[#1C1A17] px-3 py-1.5 text-xs font-medium text-white disabled:opacity-50"
                   >
                     Mentés
                   </button>
@@ -334,7 +334,7 @@ export function EditorClient({
                       await callAction("set_accent", { accent: null });
                       setAccentColorState(null);
                     }}
-                    className="rounded-md border border-zinc-300 px-3 py-1.5 text-xs text-zinc-600"
+                    className="rounded-md border border-[#E3DCCB] px-3 py-1.5 text-xs text-[#6B6354]"
                   >
                     Alapértelmezett visszaállítása
                   </button>

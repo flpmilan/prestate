@@ -19,7 +19,7 @@ export function ThemeSelect({ projectId, theme }: { projectId: string; theme: Pr
 
   return (
     <div className="flex flex-col gap-2">
-      {error ? <p className="text-xs text-red-600">{error}</p> : null}
+      {error ? <p className="text-xs text-[#A8402A]">{error}</p> : null}
       <div className="flex flex-wrap gap-2">
         {OPTIONS.map((opt) => (
           <button
@@ -39,10 +39,10 @@ export function ThemeSelect({ projectId, theme }: { projectId: string; theme: Pr
                 }
               });
             }}
-            className={`flex items-center gap-2 rounded-md border px-3 py-1.5 text-xs font-medium ${
+            className={`flex items-center gap-2 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
               value === opt.value
-                ? "border-zinc-900 bg-zinc-900 text-white"
-                : "border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-50"
+                ? "border-[#1C1A17] bg-[#1C1A17] text-white"
+                : "border-[#E3DCCB] bg-white text-[#1C1A17] hover:bg-[#F3EFE7]"
             }`}
           >
             <span className={`h-2.5 w-2.5 rounded-full ${opt.swatch}`} />

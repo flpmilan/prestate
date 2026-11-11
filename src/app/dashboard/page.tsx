@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type { Project } from "@/lib/types";
+import { badgeClass, ui } from "@/lib/ui";
 
 const statusLabel: Record<Project["status"], string> = {
   draft: "Vázlat",
@@ -30,35 +31,36 @@ export default async function DashboardPage() {
   return (
     <div className="mx-auto max-w-4xl px-6 py-10">
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-semibold text-zinc-900">Projektjeim</h1>
-        <Link
-          href="/dashboard/projects/new"
-          className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
-        >
-          Új projekt
+        <div>
+          <span className={ui.sectionLabel}>{organization.name}</span>
+          <h1 className={`mt-1 ${ui.heading}`} style={{ fontFamily: "var(--font-fraunces)" }}>
+            Projektjeim
+          </h1>
+        </div>
+        <Link href="/dashboard/projects/new" className={ui.buttonAccent}>
+          + Új projekt
         </Link>
       </div>
 
       {!projects || projects.length === 0 ? (
-        <p className="mt-8 text-sm text-zinc-500">
-          Még nincs projekted. Hozd létre az elsőt, és kezdd el feltölteni a lakáslistát.
-        </p>
+        <div className={`mt-8 flex flex-col items-center gap-3 ${ui.card} px-6 py-16 text-center`}>
+          <p className="text-sm text-[#6B6354]">
+            Még nincs projekted. Hozd létre az elsőt, és kezdd el feltölteni a lakáslistát.
+          </p>
+          <Link href="/dashboard/projects/new" className={ui.buttonAccent}>
+            + Első projekt létrehozása
+          </Link>
+        </div>
       ) : (
         <ul className="mt-6 flex flex-col gap-3">
           {projects.map((p) => (
             <li key={p.id}>
               <Link
                 href={`/dashboard/projects/${p.id}`}
-                className="flex items-center justify-between rounded-lg border border-zinc-200 bg-white px-4 py-3 hover:border-zinc-300"
+                className={`flex items-center justify-between px-5 py-4 transition-colors hover:border-[#9C5636]/40 hover:bg-[#FBF8F3] ${ui.card}`}
               >
-                <span className="font-medium text-zinc-900">{p.name}</span>
-                <span
-                  className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                    p.status === "published"
-                      ? "bg-emerald-100 text-emerald-700"
-                      : "bg-zinc-100 text-zinc-600"
-                  }`}
-                >
+                <span className="font-medium text-[#1C1A17]">{p.name}</span>
+                <span className={badgeClass(p.status === "published" ? "success" : "neutral")}>
                   {statusLabel[p.status as Project["status"]]}
                 </span>
               </Link>

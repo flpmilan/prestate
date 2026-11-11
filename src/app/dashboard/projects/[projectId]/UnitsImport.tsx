@@ -99,22 +99,22 @@ export function UnitsImport({ projectId }: { projectId: string }) {
   }
 
   return (
-    <div className="flex flex-col gap-2 rounded-lg border border-dashed border-zinc-300 p-4">
-      <p className="text-xs text-zinc-500">
+    <div className="flex flex-col gap-2 rounded-lg border border-dashed border-[#D9CFBB] bg-[#FBF8F3] p-4">
+      <p className="text-xs text-[#6B6354]">
         Elvárt oszlopok: <code>lakás, emelet, terület, szobaszám, ár, státusz, alaprajz</code> (a
         sorrend és a magyar/angol elnevezés is elfogadott). Opcionális{" "}
         <code>helyiségek</code> oszlop a helyiségenkénti bontáshoz, pl.{" "}
         <code>Konyha: 8.2, Előszoba: 4.1, Nappali: 22</code>.
       </p>
-      {error ? <p className="text-xs text-red-600">{error}</p> : null}
-      {message ? <p className="text-xs text-emerald-600">{message}</p> : null}
+      {error ? <p className="text-xs text-[#A8402A]">{error}</p> : null}
+      {message ? <p className="text-xs text-[#3D6B3A]">{message}</p> : null}
       <div className="flex flex-wrap items-center gap-2">
-        <input ref={inputRef} type="file" accept=".xlsx,.xls,.csv" className="text-sm" />
+        <input ref={inputRef} type="file" accept=".xlsx,.xls,.csv" className="text-sm text-[#6B6354]" />
         <button
           type="button"
           disabled={busy}
           onClick={handleImport}
-          className="rounded-md bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-zinc-800"
+          className="rounded-md bg-[#1C1A17] px-3 py-1.5 text-sm font-medium text-white hover:bg-[#2E2A24] disabled:opacity-50"
         >
           {busy ? "Importálás..." : "Lakáslista importálása"}
         </button>

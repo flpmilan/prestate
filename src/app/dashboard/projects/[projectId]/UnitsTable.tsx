@@ -21,7 +21,7 @@ export function UnitsTable({
   return (
     <table className="mt-4 w-full text-left text-sm">
       <thead>
-        <tr className="border-b border-zinc-200 text-xs text-zinc-500">
+        <tr className="border-b border-[#E8E1D4] text-xs text-[#9C8F7E]">
           <th className="py-2">Lakás</th>
           <th>Emelet</th>
           <th>Terület</th>
@@ -34,12 +34,12 @@ export function UnitsTable({
       <tbody>
         {units.map((u) => (
           <Fragment key={u.id}>
-            <tr className="border-b border-zinc-100">
-              <td className="py-2 font-medium text-zinc-900">{u.unit_number}</td>
-              <td>{u.floor ?? "–"}</td>
-              <td>{u.area_sqm ? `${u.area_sqm} m²` : "–"}</td>
-              <td>{u.room_count ?? "–"}</td>
-              <td>{u.price ? `${u.price.toLocaleString("hu-HU")} Ft` : "–"}</td>
+            <tr className="border-b border-[#F1EDE4]">
+              <td className="py-2 font-medium text-[#1C1A17]">{u.unit_number}</td>
+              <td className="text-[#1C1A17]">{u.floor ?? "–"}</td>
+              <td className="text-[#1C1A17]">{u.area_sqm ? `${u.area_sqm} m²` : "–"}</td>
+              <td className="text-[#1C1A17]">{u.room_count ?? "–"}</td>
+              <td className="text-[#1C1A17]">{u.price ? `${u.price.toLocaleString("hu-HU")} Ft` : "–"}</td>
               <td>
                 <UnitStatusSelect unitId={u.id} status={u.status} />
               </td>
@@ -47,14 +47,14 @@ export function UnitsTable({
                 <button
                   type="button"
                   onClick={() => setExpanded(expanded === u.id ? null : u.id)}
-                  className="text-xs font-medium text-zinc-500 hover:text-zinc-900"
+                  className="text-xs font-medium text-[#9C5636] hover:text-[#86472C]"
                 >
                   {expanded === u.id ? "Bezár" : "Részletek"}
                 </button>
               </td>
             </tr>
             {expanded === u.id ? (
-              <tr className="border-b border-zinc-100">
+              <tr className="border-b border-[#F1EDE4]">
                 <td colSpan={7} className="py-3">
                   <UnitDetailsPanel
                     unitId={u.id}

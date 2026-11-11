@@ -42,17 +42,17 @@ export function FloorPlanCard({
   const displayImage = showRender && render3dUrl ? render3dUrl : imageUrl;
 
   return (
-    <div className="w-32 rounded-md border border-zinc-200 bg-white p-2 text-center">
+    <div className="w-32 rounded-md border border-[#E8E1D4] bg-white p-2 text-center">
       {displayImage ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img src={displayImage} alt={name} className="h-20 w-full object-contain" />
       ) : null}
-      <p className="mt-1 truncate text-xs text-zinc-600">{name}</p>
+      <p className="mt-1 truncate text-xs text-[#6B6354]">{name}</p>
       {render3dUrl ? (
         <button
           type="button"
           onClick={() => setShowRender((v) => !v)}
-          className="mt-1 text-[11px] font-medium text-blue-600 hover:underline"
+          className="mt-1 text-[11px] font-medium text-[#9C5636] hover:underline"
         >
           {showRender ? "2D alaprajz" : "3D render megtekintése"}
         </button>
@@ -61,12 +61,12 @@ export function FloorPlanCard({
           type="button"
           disabled={busy}
           onClick={generate}
-          className="mt-1 text-[11px] font-medium text-blue-600 hover:underline disabled:opacity-50"
+          className="mt-1 text-[11px] font-medium text-[#9C5636] hover:underline disabled:opacity-50"
         >
           {busy ? "Generálás..." : "3D render AI-val"}
         </button>
       )}
-      {error ? <p className="mt-1 text-[10px] text-red-600">{error}</p> : null}
+      {error ? <p className="mt-1 text-[10px] text-[#A8402A]">{error}</p> : null}
     </div>
   );
 }
